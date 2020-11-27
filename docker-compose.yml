@@ -7,9 +7,14 @@ services:
     ports:
     - 80:80
     command: nginx -g 'daemon off;'
+    depends_on:
+      - static
+      - api
+      - pushpin
     restart: unless-stopped
   static:
     image: julianpoy/recipesage:static-latest
+    command: bash -c "sed -i 's/API_BASE_OVERRIDE = null/API_BASE_OVERRIDE = \"\/api\/\"/' /usr/share/nginx/html/index.html && nginx -g 'daemon off;'"
     restart: unless-stopped
   api:
     image: julianpoy/recipesage:api-latest
@@ -52,14 +57,13 @@ services:
     environment:
       - discovery.type=single-node
       - ELASTIC_PASSWORD=recipesage_selfhost
+    volumes:
+      - elasticsearchdata:/usr/share/elasticsearch/data
     restart: unless-stopped
   pushpin:
     image: fanout/pushpin:1.27.0
     environment:
       - target=api:3000
-    ports:
-      - "7999:7999"
-      - "5560-5563:5560-5563"
     restart: unless-stopped
   postgres:
     image: postgres
@@ -67,6 +71,8 @@ services:
       - POSTGRES_DB=recipesage_selfhost
       - POSTGRES_USER=recipesage_selfhost
       - POSTGRES_PASSWORD=recipesage_selfhost
+    volumes:
+      - postgresdata:/var/lib/postgresql/data
     restart: unless-stopped
   browserless:
     image: browserless/chrome:1.28.0-chrome-stable
@@ -74,3 +80,8 @@ services:
       - MAX_CONCURRENT_SESSIONS=3
       - MAX_QUEUE_LENGTH=10
     restart: unless-stopped
+volumes:
+  elasticsearchdata:
+    driver: local
+  postgresdata:
+    driver: local
