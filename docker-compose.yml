@@ -13,17 +13,17 @@ services:
       - pushpin
     restart: unless-stopped
   static:
-    image: julianpoy/recipesage:static-latest
+    image: julianpoy/recipesage-selfhost:static-latest
     command: bash -c "sed -i 's/API_BASE_OVERRIDE = null/API_BASE_OVERRIDE = \"\/api\/\"/' /usr/share/nginx/html/index.html && nginx -g 'daemon off;'"
     restart: unless-stopped
   api:
-    image: julianpoy/recipesage:api-latest
+    image: julianpoy/recipesage-selfhost:api-latest
     depends_on:
       - postgres
       - elasticsearch
       - pushpin
       - browserless
-    command: node src/bin/www
+    command: /app/www
     environment:
       - AWS_ACCESS_KEY_ID
       - AWS_SECRET_ACCESS_KEY
