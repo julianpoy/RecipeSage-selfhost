@@ -25,13 +25,17 @@ services:
       - browserless
     command: /app/www
     environment:
-      - AWS_ACCESS_KEY_ID
-      - AWS_SECRET_ACCESS_KEY
+      - AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE
+      - AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
       - AWS_REGION=us-west-2
-      - AWS_BUCKET=chefbook-dev
+      - AWS_BUCKET=recipesage-selfhost
+      - AWS_ENDPOINT=http://minio:9000/ # Needed for minio, remove for s3 - should be the internal container address to minio
+      - AWS_S3_PUBLIC_PATH=http://localhost:9000/recipesage-selfhost/ # Needed for minio, remove for s3 - should be a public facing address/path directed to minio
+      - AWS_S3_FORCE_PATH_STYLE=true # Needed for minio, remove for s3
+      - AWS_S3_SIGNATURE_VERSION=v4 # Needed for minio, remove for s3
       - NODE_ENV=selfhost
       - VERBOSE=false
-      - VERSION=self-host
+      - VERSION=selfhost
       - POSTGRES_DB=recipesage_selfhost
       - POSTGRES_USER=recipesage_selfhost
       - POSTGRES_PASSWORD=recipesage_selfhost
@@ -41,6 +45,8 @@ services:
       - POSTGRES_LOGGING=false
       - GCM_KEYPAIR
       - SENTRY_DSN
+      - GRAYLOG_HOST=localhost
+      - GRAYLOG_PORT
       - GRIP_URL=http://pushpin:5561/
       - GRIP_KEY=changeme
       - ELASTIC_ENABLE=true
@@ -80,8 +86,33 @@ services:
       - MAX_CONCURRENT_SESSIONS=3
       - MAX_QUEUE_LENGTH=10
     restart: unless-stopped
+  minio:
+    image: minio/minio
+    ports:
+      - 9000:9000
+    environment:
+      - MINIO_ACCESS_KEY=AKIAIOSFODNN7EXAMPLE
+      - MINIO_SECRET_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+    volumes:
+      - miniodata:/data
+    command: server /data
+    restart: unless-stopped
+  create-minio-buckets:
+    image: minio/mc
+    depends_on:
+      - minio
+    entrypoint: sh -c
+    command: >
+      "
+      /usr/bin/mc config host add myminio http://minio:9000 AKIAIOSFODNN7EXAMPLE wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY;
+      /usr/bin/mc mb myminio/recipesage-selfhost;
+      /usr/bin/mc policy set public myminio/recipesage-selfhost;
+      exit 0;
+      "
 volumes:
   elasticsearchdata:
     driver: local
   postgresdata:
+    driver: local
+  miniodata:
     driver: local
