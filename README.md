@@ -1,8 +1,10 @@
-# RecipeSage Self Hosting
+# RecipeSage
+
+[RecipeSage](https://recipesage.com) is a free personal recipe keeper, meal planner, and shopping list organizer for Web, IOS, and Android. It can be used to share recipes, shopping lists, and meal plans with your family & friends, as well as import (grab) recipes from any URL on the web.
 
 This repository contains the configuration needed to run your own, personal instance of [RecipeSage](https://recipesage.com).
 
-These images are based on the same version that the official [RecipeSage](https://recipesage.com) uses in the cloud for the hosted instance. I'm mostly focused on the hosted instance, but please let me know if there are issues when attempting to run it locally!
+The docker images used here are based on the same version that the official [RecipeSage](https://recipesage.com) uses in the cloud for the hosted instance. I'm mostly focused on the official hosted instance, but please let me know if there are issues when attempting to run it locally!
 
 ## License/Usage Restrictions
 
