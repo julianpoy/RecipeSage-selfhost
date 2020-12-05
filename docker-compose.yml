@@ -6,7 +6,6 @@ services:
     - ./proxy.conf:/etc/nginx/conf.d/default.conf
     ports:
     - 80:80
-    command: nginx -g 'daemon off;'
     depends_on:
       - static
       - api
@@ -14,7 +13,6 @@ services:
     restart: unless-stopped
   static:
     image: julianpoy/recipesage-selfhost:static-latest
-    command: bash -c "sed -i 's/API_BASE_OVERRIDE = null/API_BASE_OVERRIDE = \"\/api\/\"/' /usr/share/nginx/html/index.html && nginx -g 'daemon off;'"
     restart: unless-stopped
   api:
     image: julianpoy/recipesage-selfhost:api-latest
