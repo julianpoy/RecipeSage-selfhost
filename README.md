@@ -1,8 +1,8 @@
 # RecipeSage Self Hosting
 
-This repository contains the configuration needed to run your own, personal instance of RecipeSage.
+This repository contains the configuration needed to run your own, personal instance of [RecipeSage](https://recipesage.com).
 
-These images are based on the same version that RecipeSage uses in the cloud for the hosted instance. I'm mostly focused on the hosted instance, but please let me know if there are issues when attempting to run it locally!
+These images are based on the same version that the official [RecipeSage](https://recipesage.com) uses in the cloud for the hosted instance. I'm mostly focused on the hosted instance, but please let me know if there are issues when attempting to run it locally!
 
 ## License/Usage Restrictions
 
@@ -12,7 +12,7 @@ Warning: There are portions of the software that may not work. I don't warranty 
 
 ## Setup
 
-You'll need Docker to run RecipeSage locally. Although you _can_ attempt to run it without Docker, it likely won't work or will be buggy.
+You'll need Docker to run [RecipeSage](https://recipesage.com) locally. Although you _can_ attempt to run it without Docker, it likely won't work or will be buggy.
 
 To start, simply start all containers:
 `docker-compose up -d`
