@@ -55,6 +55,7 @@ services:
       - STRIPE_WEBHOOK_SECRET
       - BROWSERLESS_HOST=browserless
       - BROWSERLESS_PORT=3000
+      - INGREDIENT_INSTRUCTION_CLASSIFIER_URL=http://ingredient-instruction-classifier:3000/
     restart: unless-stopped
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.6.1
@@ -83,6 +84,12 @@ services:
     environment:
       - MAX_CONCURRENT_SESSIONS=3
       - MAX_QUEUE_LENGTH=10
+    restart: unless-stopped
+  ingredient-instruction-classifier:
+    image: julianpoy/ingredient-instruction-classifier:latest
+    environment:
+      - SENTENCE_EMBEDDING_BATCH_SIZE=200
+      - PREDICTION_CONCURRENCY=4
     restart: unless-stopped
   minio:
     image: minio/minio
