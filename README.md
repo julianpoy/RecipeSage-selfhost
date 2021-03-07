@@ -24,9 +24,21 @@ On first run, and when updating, you'll need to run migrations:
 
 I strongly recommend taking a backup of your volumes before migrating to avoid any potential data loss.
 
-RecipeSage _really_ depends on AWS S3 for image storage, but I've stubbed in fake S3 via Minio. I _highly_ suggest setting up an AWS account with S3 and using that rather than Minio. That said, Minio seems to work just fine in my limited testing, so YMMV. If you're using minio will want to set `AWS_S3_PUBLIC_PATH` to the public address at which the minio bucket is reachable (`http://localhost:9000/recipesage-selfhost/` by default).
+RecipeSage _really_ depends on AWS S3 for image storage, but I've stubbed in fake S3 via Minio. I _highly_ suggest setting up an AWS account with S3 and using that rather than Minio. That said, Minio seems to work just fine in my limited testing, so YMMV.
 
 If you're not going to use minio, and are going to use S3 proper, you'll want to remove the minio-specific environment variables (marked with comments), and plug in your AWS credentials.
 
 You'll likely want to put this behind some type of reverse proxy (I recommend nginx) to add SSL (I recommend Lets Encrypt). As-is, the container consumes port 80 on the host system. You can easily change that to another host port as desired.
+
+## Changelog
+
+### v1.1.0
+
+Move minio behind app proxy.
+
+**Note:** If you're upgrading from an earlier version of these selfhost configs, you'll need to make sure to continue to expose 9000 on the Minio container in order to maintain access to images uploaded before this change, **or** update the image path in the DB.
+
+### v1.0.0
+
+Initial release.
 

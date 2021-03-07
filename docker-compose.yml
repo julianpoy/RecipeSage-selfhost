@@ -28,7 +28,7 @@ services:
       - AWS_REGION=us-west-2
       - AWS_BUCKET=recipesage-selfhost
       - AWS_ENDPOINT=http://minio:9000/ # Needed for minio, remove for s3 - should be the internal container address to minio
-      - AWS_S3_PUBLIC_PATH=http://localhost:9000/recipesage-selfhost/ # Needed for minio, remove for s3 - should be a public facing address/path directed to minio
+      - AWS_S3_PUBLIC_PATH=/minio/recipesage-selfhost/ # Needed for minio, remove for s3 - should be a public facing address/path directed to minio (by default nginx proxy handles)
       - AWS_S3_FORCE_PATH_STYLE=true # Needed for minio, remove for s3
       - AWS_S3_SIGNATURE_VERSION=v4 # Needed for minio, remove for s3
       - NODE_ENV=selfhost
@@ -93,8 +93,6 @@ services:
     restart: unless-stopped
   minio:
     image: minio/minio
-    ports:
-      - 9000:9000
     environment:
       - MINIO_ACCESS_KEY=AKIAIOSFODNN7EXAMPLE
       - MINIO_SECRET_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
