@@ -30,6 +30,18 @@ If you're not going to use minio, and are going to use S3 proper, you'll want to
 
 You'll likely want to put this behind some type of reverse proxy (I recommend nginx) to add SSL (I recommend Lets Encrypt). As-is, the container consumes port 80 on the host system. You can easily change that to another host port as desired.
 
+## Updating
+
+Update your local images: `docker-compose pull`
+Then, down & up the containers: `docker-compose down && docker-compose up -d`
+
+## Bonus Features
+
+The "bonus features" from the hosted version can be activated by running the following command (swap out the email address with your account email).
+Please contribute to the development & maintenance of RecipeSage at https://recipesage.com/#/contribute -- Julian.
+
+`docker-compose exec api /app/activate example@example.com`
+
 ## Changelog
 
 ### v1.1.0
