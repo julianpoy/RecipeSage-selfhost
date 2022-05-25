@@ -15,7 +15,7 @@ services:
     image: julianpoy/recipesage-selfhost:static-latest
     restart: unless-stopped
   api:
-    image: julianpoy/recipesage-selfhost:api-latest
+    image: julianpoy/recipesage-selfhost:api-v2.8.0-beta2
     depends_on:
       - postgres
       - elasticsearch
