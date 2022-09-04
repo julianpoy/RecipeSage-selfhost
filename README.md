@@ -35,6 +35,15 @@ You'll likely want to put this behind some type of reverse proxy (I recommend ng
 Update your local images: `docker-compose pull`
 Then, down & up the containers: `docker-compose down && docker-compose up -d`
 
+## Disabling Registration  
+
+If you want to disable registration, **after** you have registered yourself as a user, add this to the top of the docker environment variables: 
+`DISABLE_REGISTRATION=true` 
+
+Then, down & up the containers: `docker-compose down && docker-compose up -d`
+
+The registration screen will appear, but will fail with an error.
+
 ## Bonus Features
 
 The "bonus features" from the hosted version can be activated by running the following command (swap out the email address with your account email).
