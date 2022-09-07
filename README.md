@@ -26,6 +26,8 @@ To start, simply start all containers:
 On first run, and when updating, you'll need to run migrations:
 `docker-compose exec api /app/migrate`
 
+The app should be available at port 80. You can change that by changing [this](https://github.com/julianpoy/RecipeSage-selfhost/blob/a1133c51af24ca78f9bc9537e147411b5e7e311a/docker-compose.yml#L8) to something else, such as `3000:80` for port 3000.
+
 ### Updating
 
 As with any migration/upgrade, I recommend taking a backup of your volumes before migrating to avoid any potential data loss.
