@@ -46,7 +46,7 @@ If you want to disable registration, **after** you have registered yourself as a
 
 Then, down & up the containers: `docker-compose down && docker-compose up -d`
 
-The registration screen will appear, but will fail with an error.
+When registration is disabled, the registration screen will still appear but will fail with an error if anyone tries to register.
 
 ## Bonus Features
 
