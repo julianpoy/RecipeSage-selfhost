@@ -10,7 +10,7 @@ This repository contains the configuration needed to run your own, personal inst
 
 The docker images used here are based on the same version that the official [RecipeSage](https://recipesage.com) uses in the cloud for the hosted instance. I'm mostly focused on the official hosted instance, but please let me know if there are issues when attempting to run it locally!
 
-## License/Usage Restrictions
+### License/Usage Restrictions
 
 Please note that this repository and all public RecipeSage branding, docker images, code, binaries, and everything else are for personal, private (non-public), non commercial use only. All RecipeSage branding is not licensed for reuse.
 
@@ -39,7 +39,14 @@ Then, down & up the containers: `docker-compose down && docker-compose up -d`
 Finally, run any pending migrations:
 `docker-compose exec api /app/migrate`
 
-## Disabling Registration  
+<br />
+
+
+## Customization
+
+The following sections provide some information on customizing your instance. Following the "setup" section is enough to get you running with a RecipeSage instance like that of the official site.
+
+### Disabling Registration  
 
 If you want to disable registration, **after** you have registered yourself as a user, add this to the top of the docker environment variables: 
 `DISABLE_REGISTRATION=true` 
@@ -48,14 +55,14 @@ Then, down & up the containers: `docker-compose down && docker-compose up -d`
 
 When registration is disabled, the registration screen will still appear but will fail with an error if anyone tries to register.
 
-## Bonus Features
+### Bonus Features
 
 The "bonus features" from the hosted version can be activated by running the following command (swap out the email address with your account email).
 Please contribute to the development & maintenance of RecipeSage at https://recipesage.com/#/contribute -- Julian.
 
 `docker-compose exec api /app/activate example@example.com`
 
-## Container Structure
+### Container Structure
 
 This section is here just to explain the purpose of each container and why it's necessary. Following Docker principles, every part of the application is compartmentalized into it's own container with it's own singular responsibility. I've described what role each plays in making the application do what it does.
 
