@@ -84,9 +84,13 @@ The `browserless` container is a virtual web browser that is used to scrape reci
 
 The `ingredient-instruction-classifier` container facilitates machine learning classification of ingredients and instructions, which is used to improve accuracy during the "autofill" feature. Without it, the recipe _should still work_, but will be a bit less accurate or may not be able to pull ingredients or instructions from poorly formatted webpages.
 
-The `minio` container 
+The `minio` container stores photos/images for the recipes. It could be replaced with AWS's S3 service if preferred. 
 
 ## Changelog
+
+### v1.1.1
+
+Fix public access permissions for new minio installations. 
 
 ### v1.1.0
 
