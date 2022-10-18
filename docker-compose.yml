@@ -109,7 +109,7 @@ services:
       "
       /usr/bin/mc config host add myminio http://minio:9000 AKIAIOSFODNN7EXAMPLE wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY;
       /usr/bin/mc mb myminio/recipesage-selfhost;
-      /usr/bin/mc policy set public myminio/recipesage-selfhost;
+      /usr/bin/mc anonymous set download myminio/recipesage-selfhost;
       exit 0;
       "
 volumes:
