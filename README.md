@@ -88,6 +88,12 @@ The `minio` container stores photos/images for the recipes. It could be replaced
 
 ## Changelog
 
+### v1.2.0
+
+Update RecipeSage image to v2.9.0 and ElasticSearch image to v8.4.3.
+
+**Upgrade note:** You must first upgrade your elasticsearch container image to 7.17.
+
 ### v1.1.1
 
 Fix public access permissions for new minio installations. 
