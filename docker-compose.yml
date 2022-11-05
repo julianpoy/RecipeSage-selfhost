@@ -12,10 +12,10 @@ services:
       - pushpin
     restart: unless-stopped
   static:
-    image: julianpoy/recipesage-selfhost:static-v2.8.1
+    image: julianpoy/recipesage-selfhost:static-v2.9.0
     restart: unless-stopped
   api:
-    image: julianpoy/recipesage-selfhost:api-v2.8.1
+    image: julianpoy/recipesage-selfhost:api-v2.9.0
     depends_on:
       - postgres
       - elasticsearch
@@ -58,7 +58,7 @@ services:
       - INGREDIENT_INSTRUCTION_CLASSIFIER_URL=http://ingredient-instruction-classifier:3000/
     restart: unless-stopped
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.6.1
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.4.3
     environment:
       - discovery.type=single-node
       - ELASTIC_PASSWORD=recipesage_selfhost
