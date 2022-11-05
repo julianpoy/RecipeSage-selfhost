@@ -30,11 +30,13 @@ The app should be available at port 80. You can change that by changing [this](h
 
 ### Updating
 
+First, take a look at the changelog below for any special upgrade notes. Then follow the steps below.
+
 As with any migration/upgrade, I recommend taking a backup of your volumes before migrating to avoid any potential data loss.
 
-Update the version numbers for the `static` and `api` containers to the latest version.
+Update your local copy of this repo with the latest from this repository. If cloned with Git, this is as simple as `git pull`.
 
-If you're using the `api-latest`/`static-latest` tags, update your local images: `docker-compose pull`.
+Update your local images: `docker-compose pull`.
 
 Then, down & up the containers: `docker-compose down && docker-compose up -d`
 
