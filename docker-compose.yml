@@ -12,10 +12,10 @@ services:
       - pushpin
     restart: unless-stopped
   static:
-    image: julianpoy/recipesage-selfhost:static-v2.9.0
+    image: julianpoy/recipesage-selfhost:static-v2.9.4
     restart: unless-stopped
   api:
-    image: julianpoy/recipesage-selfhost:api-v2.9.0
+    image: julianpoy/recipesage-selfhost:api-v2.9.4
     depends_on:
       - postgres
       - elasticsearch
