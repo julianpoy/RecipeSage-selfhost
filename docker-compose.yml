@@ -65,6 +65,7 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.4.3
     environment:
       - discovery.type=single-node
+      - ES_JAVA_OPTS="-Xms1500m -Xmx1500m"
       - ELASTIC_PASSWORD=recipesage_selfhost
     volumes:
       - elasticsearchdata:/usr/share/elasticsearch/data
