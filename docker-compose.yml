@@ -67,6 +67,7 @@ services:
       - discovery.type=single-node
       - "ES_JAVA_OPTS=-Xms1500m -Xmx1500m"
       - ELASTIC_PASSWORD=recipesage_selfhost
+      - xpack.security.enabled=false
     volumes:
       - elasticsearchdata:/usr/share/elasticsearch/data
     restart: unless-stopped
