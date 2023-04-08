@@ -1,4 +1,4 @@
-<a href="https://recipesage.com"><img align="left" width="100" height="100" src="https://github.com/julianpoy/RecipeSage/raw/master/Frontend/src/assets/imgs/logo_green.png"></img></a>
+<a href="https://recipesage.com"><img align="left" width="100" height="100" src="https://github.com/julianpoy/RecipeSage/raw/master/packages/frontend/src/assets/imgs/logo_green.png"></img></a>
 
 # RecipeSage Self-Hosting Toolkit
 
