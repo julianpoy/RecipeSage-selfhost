@@ -58,7 +58,7 @@ When registration is disabled, the registration screen will still appear but wil
 The "bonus features" from the hosted version can be activated by running the following command (swap out the email address with your account email).
 Please contribute to the development & maintenance of RecipeSage at https://recipesage.com/#/contribute -- Julian.
 
-`docker-compose exec api /app/activate example@example.com`
+`./activate.sh example@example.com`
 
 ### Container Structure
 
