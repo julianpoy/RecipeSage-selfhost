@@ -1,6 +1,6 @@
 version: '3.7'
 services:
-  proxy:
+  proxy: # The proxy must not be removed. If needed, point your own proxy to this container, rather than removing this
     image: nginx
     volumes:
     - ./proxy.conf:/etc/nginx/conf.d/default.conf
@@ -11,30 +11,24 @@ services:
       - api
       - pushpin
     restart: unless-stopped
-  static:
-    image: julianpoy/recipesage-selfhost:static-v2.9.9
+  static: # Hosts frontend assets
+    image: julianpoy/recipesage-selfhost:static-v2.11.0-beta8
     environment:
       - API_BASE_OVERRIDE=null
     volumes:
       - ./static.entrypoint.sh:/docker-entrypoint.d/static.entrypoint.sh
     restart: unless-stopped
-  api:
-    image: julianpoy/recipesage-selfhost:api-v2.9.9
+  api: # Hosts backend API
+    image: julianpoy/recipesage-selfhost:api-v2.11.0-beta8
     depends_on:
       - postgres
       - elasticsearch
       - pushpin
       - browserless
-    command: /app/www
+    command: tsx packages/backend/src/bin/www
     environment:
-      - AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE
-      - AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
-      - AWS_REGION=us-west-2
-      - AWS_BUCKET=recipesage-selfhost
-      - AWS_ENDPOINT=http://minio:9000/ # Needed for minio, remove for s3 - should be the internal container address to minio
-      - AWS_S3_PUBLIC_PATH=/minio/recipesage-selfhost/ # Needed for minio, remove for s3 - should be a public facing address/path directed to minio (by default nginx proxy handles)
-      - AWS_S3_FORCE_PATH_STYLE=true # Needed for minio, remove for s3
-      - AWS_S3_SIGNATURE_VERSION=v4 # Needed for minio, remove for s3
+      - STORAGE_TYPE=filesystem
+      - FILESYSTEM_STORAGE_PATH=/rs-media
       - NODE_ENV=selfhost
       - VERBOSE=false
       - VERSION=selfhost
@@ -47,12 +41,9 @@ services:
       - POSTGRES_LOGGING=false
       - GCM_KEYPAIR
       - SENTRY_DSN
-      - GRAYLOG_HOST=localhost
-      - GRAYLOG_PORT
       - GRIP_URL=http://pushpin:5561/
       - GRIP_KEY=changeme
-      - ELASTIC_ENABLE=true
-      - ELASTIC_IDX_PREFIX=rs_selfhost_
+      - SEARCH_PROVIDER=elasticsearch
       - ELASTIC_CONN=http://elastic:recipesage_selfhost@elasticsearch:9200
       - ELASTIC_PASSWORD=recipesage_selfhost
       - STRIPE_SK
@@ -60,8 +51,10 @@ services:
       - BROWSERLESS_HOST=browserless
       - BROWSERLESS_PORT=3000
       - INGREDIENT_INSTRUCTION_CLASSIFIER_URL=http://ingredient-instruction-classifier:3000/
+    volumes:
+      - apimedia:/rs-media
     restart: unless-stopped
-  elasticsearch:
+  elasticsearch: # Provides fuzzy search functionality
     image: docker.elastic.co/elasticsearch/elasticsearch:8.4.3
     environment:
       - discovery.type=single-node
@@ -71,12 +64,12 @@ services:
     volumes:
       - elasticsearchdata:/usr/share/elasticsearch/data
     restart: unless-stopped
-  pushpin:
+  pushpin: # Provides websocket support
     image: fanout/pushpin:1.27.0
     environment:
       - target=api:3000
     restart: unless-stopped
-  postgres:
+  postgres: # Database
     image: postgres
     environment:
       - POSTGRES_DB=recipesage_selfhost
@@ -85,43 +78,22 @@ services:
     volumes:
       - postgresdata:/var/lib/postgresql/data
     restart: unless-stopped
-  browserless:
+  browserless: # A headless browser for scraping websites with the auto import tool
     image: browserless/chrome:1.53.0-chrome-stable
     environment:
       - MAX_CONCURRENT_SESSIONS=3
       - MAX_QUEUE_LENGTH=10
     restart: unless-stopped
-  ingredient-instruction-classifier:
+  ingredient-instruction-classifier: # A mini server that runs a machine learning model able to classify text for improved automatic import
     image: julianpoy/ingredient-instruction-classifier:latest
     environment:
       - SENTENCE_EMBEDDING_BATCH_SIZE=200
       - PREDICTION_CONCURRENCY=4
     restart: unless-stopped
-  minio:
-    image: minio/minio
-    environment:
-      - MINIO_ACCESS_KEY=AKIAIOSFODNN7EXAMPLE
-      - MINIO_SECRET_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
-    volumes:
-      - miniodata:/data
-    command: server /data
-    restart: unless-stopped
-  create-minio-buckets:
-    image: minio/mc
-    depends_on:
-      - minio
-    entrypoint: sh -c
-    command: >
-      "
-      /usr/bin/mc config host add myminio http://minio:9000 AKIAIOSFODNN7EXAMPLE wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY;
-      /usr/bin/mc mb myminio/recipesage-selfhost;
-      /usr/bin/mc anonymous set download myminio/recipesage-selfhost;
-      exit 0;
-      "
 volumes:
+  apimedia:
+    driver: local
   elasticsearchdata:
     driver: local
   postgresdata:
-    driver: local
-  miniodata:
     driver: local
