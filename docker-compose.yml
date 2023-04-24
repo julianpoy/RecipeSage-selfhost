@@ -12,14 +12,14 @@ services:
       - pushpin
     restart: unless-stopped
   static: # Hosts frontend assets
-    image: julianpoy/recipesage-selfhost:static-v2.11.0-beta10
+    image: julianpoy/recipesage-selfhost:static-v2.11.0-beta11
     environment:
       - API_BASE_OVERRIDE=null
     volumes:
       - ./static.entrypoint.sh:/docker-entrypoint.d/static.entrypoint.sh
     restart: unless-stopped
   api: # Hosts backend API
-    image: julianpoy/recipesage-selfhost:api-v2.11.0-beta10
+    image: julianpoy/recipesage-selfhost:api-v2.11.0-beta11
     depends_on:
       - postgres
       - elasticsearch
