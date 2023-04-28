@@ -79,7 +79,7 @@ services:
       - postgresdata:/var/lib/postgresql/data
     restart: unless-stopped
   browserless: # A headless browser for scraping websites with the auto import tool
-    image: browserless/chrome:1.53.0-chrome-stable
+    image: browserless/chrome:1.57-puppeteer-19.2.2
     environment:
       - MAX_CONCURRENT_SESSIONS=3
       - MAX_QUEUE_LENGTH=10
