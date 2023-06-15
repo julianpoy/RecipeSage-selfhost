@@ -85,7 +85,7 @@ services:
       - MAX_QUEUE_LENGTH=10
     restart: unless-stopped
   ingredient-instruction-classifier: # A mini server that runs a machine learning model able to classify text for improved automatic import
-    image: julianpoy/ingredient-instruction-classifier:latest
+    image: julianpoy/ingredient-instruction-classifier:1.1.0
     environment:
       - SENTENCE_EMBEDDING_BATCH_SIZE=200
       - PREDICTION_CONCURRENCY=4
