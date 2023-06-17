@@ -25,7 +25,7 @@ services:
       - elasticsearch
       - pushpin
       - browserless
-    command: tsx packages/backend/src/bin/www
+    command: npx --yes tsx packages/backend/src/bin/www
     environment:
       - STORAGE_TYPE=filesystem
       - FILESYSTEM_STORAGE_PATH=/rs-media
