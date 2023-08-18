@@ -12,20 +12,20 @@ services:
       - pushpin
     restart: unless-stopped
   static: # Hosts frontend assets
-    image: julianpoy/recipesage-selfhost:static-v2.11.0-beta19
+    image: julianpoy/recipesage-selfhost:static-v2.11.5
     environment:
       - API_BASE_OVERRIDE=null
     volumes:
       - ./static.entrypoint.sh:/docker-entrypoint.d/static.entrypoint.sh
     restart: unless-stopped
   api: # Hosts backend API
-    image: julianpoy/recipesage-selfhost:api-v2.11.0-beta19
+    image: julianpoy/recipesage-selfhost:api-v2.11.5
     depends_on:
       - postgres
-      - elasticsearch
+      - typesense
       - pushpin
       - browserless
-    command: npx --yes tsx packages/backend/src/bin/www
+    command: npx ts-node --swc --project packages/backend/tsconfig.json packages/backend/src/bin/www
     environment:
       - STORAGE_TYPE=filesystem
       - FILESYSTEM_STORAGE_PATH=/rs-media
@@ -39,13 +39,14 @@ services:
       - POSTGRES_HOST=postgres
       - POSTGRES_SSL=false
       - POSTGRES_LOGGING=false
+      - DATABASE_URL=postgresql://recipesage_selfhost:recipesage_selfhost@postgres:5432/recipesage_selfhost
       - GCM_KEYPAIR
       - SENTRY_DSN
       - GRIP_URL=http://pushpin:5561/
       - GRIP_KEY=changeme
-      - SEARCH_PROVIDER=elasticsearch
-      - ELASTIC_CONN=http://elastic:recipesage_selfhost@elasticsearch:9200
-      - ELASTIC_PASSWORD=recipesage_selfhost
+      - SEARCH_PROVIDER=typesense
+      - 'TYPESENSE_NODES=[{"host": "typesense", "port": 8108, "protocol": "http"}]'
+      - TYPESENSE_API_KEY=recipesage_selfhost
       - STRIPE_SK
       - STRIPE_WEBHOOK_SECRET
       - BROWSERLESS_HOST=browserless
@@ -54,16 +55,11 @@ services:
     volumes:
       - apimedia:/rs-media
     restart: unless-stopped
-  elasticsearch: # Provides fuzzy search functionality
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.8.1
-    environment:
-      - discovery.type=single-node
-      - "ES_JAVA_OPTS=-Xms1500m -Xmx1500m"
-      - ELASTIC_PASSWORD=recipesage_selfhost
-      - xpack.security.enabled=false
+  typesense:
+    image: typesense/typesense:0.24.1
     volumes:
-      - elasticsearchdata:/usr/share/elasticsearch/data
-    restart: unless-stopped
+      - typesensedata:/data
+    command: "--data-dir /data --api-key=recipesage_selfhost --enable-cors"
   pushpin: # Provides websocket support
     image: fanout/pushpin:1.27.0
     environment:
@@ -93,7 +89,7 @@ services:
 volumes:
   apimedia:
     driver: local
-  elasticsearchdata:
+  typesensedata:
     driver: local
   postgresdata:
     driver: local
