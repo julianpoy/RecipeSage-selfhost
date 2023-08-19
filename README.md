@@ -21,7 +21,7 @@ Warning: There are portions of the software that may not work. I don't warranty 
 1. You'll need Docker to run [RecipeSage](https://recipesage.com) locally. Although you _can_ attempt to run it without Docker, you're on your own.
 2. Start all containers with `docker compose up -d`
 3. On first run, and when updating, you'll need to run database migrations with `./migrate.sh`
-4. The app should be available at port 80. You can change that by changing [this](https://github.com/julianpoy/RecipeSage-selfhost/blob/a1133c51af24ca78f9bc9537e147411b5e7e311a/docker compose.yml#L8) to something else, such as `3000:80` for port 3000.
+4. The app should be available at port 80. You can change that by changing [this](https://github.com/julianpoy/RecipeSage-selfhost/blob/a1133c51af24ca78f9bc9537e147411b5e7e311a/docker-compose.yml#L8) to something else, such as `3000:80` for port 3000.
 
 ### Updating
 
@@ -90,7 +90,7 @@ Revamp selfhosting configs. Use local filesystem rather than minio.
 (none of this applies to new users, only those with existing data)
 
 The new docker compose.yml no longer uses minio, and instead writes directly to the local filesystem.
-You'll need to keep your minio instance from the [old Dockerfile](https://github.com/julianpoy/RecipeSage-selfhost/blob/13dd943fb1c9a9d0d74cb1af21ef40bd585e2033/docker compose.yml#L100-L108) along with it's [volume definition](https://github.com/julianpoy/RecipeSage-selfhost/blob/main/docker compose.yml#L126-L127).
+You'll need to keep your minio instance from the [old Dockerfile](https://github.com/julianpoy/RecipeSage-selfhost/blob/13dd943fb1c9a9d0d74cb1af21ef40bd585e2033/docker-compose.yml#L100-L108) along with it's [volume definition](https://github.com/julianpoy/RecipeSage-selfhost/blob/main/docker-compose.yml#L126-L127).
 
 ### v1.2.0
 
