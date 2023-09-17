@@ -82,6 +82,18 @@ The `ingredient-instruction-classifier` container facilitates machine learning c
 
 ## Changelog
 
+### v3.1.0
+
+`docker-compose` has been officially deprecated, so the app has migrated to using `docker compose`.
+
+Full ARM64 support is now official. All containters have associated ARM64 platform builds.
+
+### v3.0.0
+
+ElasticSearch has been removed in favor of TypeSense. You can remove any old ElasticSearch related containers or volumes if you choose (though the application still remains fully compatible with ElasticSearch, should you keep `SEARCH_PROVIDER` as elasticsearch as well as ElasticSearch related environment variables the same).
+
+No data will be lost if you choose to switch to TypeSense. TypeSense will be populated on your first login to the app after upgrading. TypeSense is faster for RecipeSage purposes, as well as less memory-intensive.
+
 ### v2.0.0
 
 Revamp selfhosting configs. Use local filesystem rather than minio.
