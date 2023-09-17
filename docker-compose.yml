@@ -60,13 +60,14 @@ services:
     volumes:
       - typesensedata:/data
     command: "--data-dir /data --api-key=recipesage_selfhost --enable-cors"
+    restart: unless-stopped
   pushpin: # Provides websocket support
-    image: fanout/pushpin:1.27.0
+    image: julianpoy/pushpin:2023-09-17
     environment:
       - target=api:3000
     restart: unless-stopped
   postgres: # Database
-    image: postgres
+    image: postgres:16
     environment:
       - POSTGRES_DB=recipesage_selfhost
       - POSTGRES_USER=recipesage_selfhost
