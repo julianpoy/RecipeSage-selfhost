@@ -60,7 +60,21 @@ Please contribute to the development & maintenance of RecipeSage at https://reci
 
 `./activate.sh example@example.com`
 
-### Container Structure
+### FAQ
+
+#### Ingredient instruction classifier container repeatedly crashing
+
+It's fairly common that older CPUs (often shipped in prebuilt NASes) do not support the AVX instruction set required to run the machine learning model that the ingredient-instruction-classifier hosts. You'll an error message such as this one when encountering this issue:
+
+> Illegal Instruction (core dumped)
+
+Since the ingredient-instruction-classifier container is not _required_ by RecipeSage, it can be removed/disabled from the docker-compose file if you don't have AVX instruction set support. Without the ingredient-instruction-classifier container, the automatic recipe import feature will still work on the majority of sites, but will be unable to pull content from sites that are particularly poorly formatted, or that have no metadata at all.
+
+#### I'm seeing an "unexpected error occurred" error when trying to register
+
+This is most frequently because the migration script has not been run successfully. Note that if you change the name of the containers in the docker-compose file, the migration script will not be able to run the required migration script within the container, and you must do so by exec-ing into the container yourself, similar to what the script does.
+
+#### Container Structure
 
 This section is here just to explain the purpose of each container and why it's necessary. Following Docker principles, every part of the application is compartmentalized into it's own container with it's own singular responsibility. I've described what role each plays in making the application do what it does.
 
