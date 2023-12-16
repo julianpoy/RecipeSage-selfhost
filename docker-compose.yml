@@ -12,10 +12,10 @@ services:
       - pushpin
     restart: unless-stopped
   static: # Hosts frontend assets
-    image: julianpoy/recipesage-selfhost:static-v2.12.7
+    image: julianpoy/recipesage-selfhost:static-v2.12.9
     restart: unless-stopped
   api: # Hosts backend API
-    image: julianpoy/recipesage-selfhost:api-v2.12.7
+    image: julianpoy/recipesage-selfhost:api-v2.12.9
     depends_on:
       - postgres
       - typesense
