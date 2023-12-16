@@ -63,8 +63,14 @@ services:
     restart: unless-stopped
   pushpin: # Provides websocket support
     image: julianpoy/pushpin:2023-09-17
+    entrypoint: /bin/sh -c
+    command:
+      [
+        'sed -i "s/sig_key=changeme/sig_key=$$GRIP_KEY/" /etc/pushpin/pushpin.conf && echo "* $${TARGET},over_http" > /etc/pushpin/routes && pushpin --merge-output',
+      ]
     environment:
-      - target=api:3000
+      - GRIP_KEY=changeme
+      - TARGET=api:3000
     restart: unless-stopped
   postgres: # Database
     image: postgres:16
