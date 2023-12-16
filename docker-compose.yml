@@ -1,6 +1,7 @@
 version: '3.7'
 services:
   proxy: # The proxy must not be removed. If needed, point your own proxy to this container, rather than removing this
+    container_name: recipesage_proxy
     image: nginx
     volumes:
     - ./proxy.conf:/etc/nginx/conf.d/default.conf
@@ -12,9 +13,11 @@ services:
       - pushpin
     restart: unless-stopped
   static: # Hosts frontend assets
+    container_name: recipesage_static
     image: julianpoy/recipesage-selfhost:static-v2.12.7
     restart: unless-stopped
   api: # Hosts backend API
+    container_name: recipesage_api
     image: julianpoy/recipesage-selfhost:api-v2.12.7
     depends_on:
       - postgres
@@ -52,12 +55,14 @@ services:
       - apimedia:/rs-media
     restart: unless-stopped
   typesense:
+    container_name: recipesage_typesense
     image: typesense/typesense:0.24.1
     volumes:
       - typesensedata:/data
     command: "--data-dir /data --api-key=recipesage_selfhost --enable-cors"
     restart: unless-stopped
   pushpin: # Provides websocket support
+    container_name: recipesage_pushpin
     image: julianpoy/pushpin:2023-09-17
     entrypoint: /bin/sh -c
     command:
@@ -69,6 +74,7 @@ services:
       - TARGET=api:3000
     restart: unless-stopped
   postgres: # Database
+    container_name: recipesage_postgres
     image: postgres:16
     environment:
       - POSTGRES_DB=recipesage_selfhost
@@ -78,12 +84,14 @@ services:
       - postgresdata:/var/lib/postgresql/data
     restart: unless-stopped
   browserless: # A headless browser for scraping websites with the auto import tool
+    container_name: recipesage_browserless
     image: browserless/chrome:1.57-puppeteer-19.2.2
     environment:
       - MAX_CONCURRENT_SESSIONS=3
       - MAX_QUEUE_LENGTH=10
     restart: unless-stopped
   ingredient-instruction-classifier: # A mini server that runs a machine learning model able to classify text for improved automatic import
+    container_name: recipesage_classifier
     image: julianpoy/ingredient-instruction-classifier:1.4.9
     environment:
       - SENTENCE_EMBEDDING_BATCH_SIZE=200
