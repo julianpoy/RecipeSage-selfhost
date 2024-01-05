@@ -24,7 +24,9 @@ services:
       - typesense
       - pushpin
       - browserless
-    command: npx ts-node --swc --project packages/backend/tsconfig.json packages/backend/src/bin/www
+    # Swap commands if you want to disable automatic migrations on startup
+    command: sh -c "npx prisma migrate deploy && npx ts-node --swc --project packages/backend/tsconfig.json packages/backend/src/bin/www"
+    # command: npx ts-node --swc --project packages/backend/tsconfig.json packages/backend/src/bin/www
     environment:
       - STORAGE_TYPE=filesystem
       - FILESYSTEM_STORAGE_PATH=/rs-media
@@ -90,12 +92,12 @@ services:
       - MAX_CONCURRENT_SESSIONS=3
       - MAX_QUEUE_LENGTH=10
     restart: unless-stopped
-  ingredient-instruction-classifier: # A mini server that runs a machine learning model able to classify text for improved automatic import
+  ingredient-instruction-classifier: # A mini server that runs a machine learning model able to classify text for improved automatic import. Not required for application to run, and will crash if your CPU does not support AVX instructions
     container_name: recipesage_classifier
-    image: julianpoy/ingredient-instruction-classifier:1.4.9
+    image: julianpoy/ingredient-instruction-classifier:1.4.11
     environment:
       - SENTENCE_EMBEDDING_BATCH_SIZE=200
-      - PREDICTION_CONCURRENCY=4
+      - PREDICTION_CONCURRENCY=2
     restart: unless-stopped
 volumes:
   apimedia:
