@@ -2,9 +2,7 @@ version: '3.7'
 services:
   proxy: # The proxy must not be removed. If needed, point your own proxy to this container, rather than removing this
     container_name: recipesage_proxy
-    image: nginx
-    volumes:
-    - ./proxy.conf:/etc/nginx/conf.d/default.conf
+    image: julianpoy/recipesage-selfhost-proxy:v4.0.0
     ports:
     - 80:80
     depends_on:
