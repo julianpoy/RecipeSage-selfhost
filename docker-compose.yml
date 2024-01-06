@@ -54,13 +54,13 @@ services:
       - BROWSERLESS_PORT=3000
       - INGREDIENT_INSTRUCTION_CLASSIFIER_URL=http://ingredient-instruction-classifier:3000/
     volumes:
-      - apimedia:/rs-media
+      - recipesage_apimedia:/rs-media
     restart: unless-stopped
   typesense:
     container_name: recipesage_typesense
     image: typesense/typesense:0.24.1
     volumes:
-      - typesensedata:/data
+      - recipesage_typesensedata:/data
     command: "--data-dir /data --api-key=recipesage_selfhost --enable-cors"
     restart: unless-stopped
   pushpin: # Provides websocket support
@@ -83,7 +83,7 @@ services:
       - POSTGRES_USER=recipesage_selfhost
       - POSTGRES_PASSWORD=recipesage_selfhost
     volumes:
-      - postgresdata:/var/lib/postgresql/data
+      - recipesage_postgresdata:/var/lib/postgresql/data
     restart: unless-stopped
   browserless: # A headless browser for scraping websites with the auto import tool
     container_name: recipesage_browserless
@@ -100,9 +100,9 @@ services:
       - PREDICTION_CONCURRENCY=2
     restart: unless-stopped
 volumes:
-  apimedia:
+  recipesage_apimedia:
     driver: local
-  typesensedata:
+  recipesage_typesensedata:
     driver: local
-  postgresdata:
+  recipesage_postgresdata:
     driver: local
