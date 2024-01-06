@@ -20,13 +20,15 @@ Warning: There are portions of the software that may not work. I don't warranty 
 
 1. You'll need Docker to run [RecipeSage](https://recipesage.com) locally. Although you _can_ attempt to run it without Docker, you're on your own.
 2. Start all containers with `docker compose up -d`
-3. The app should be available at port 80. You can change that by changing [this](https://github.com/julianpoy/RecipeSage-selfhost/blob/a1133c51af24ca78f9bc9537e147411b5e7e311a/docker-compose.yml#L8) to something else, such as `3000:80` for port 3000.
+3. The app should be available at port 7270. You can change that by changing [this](https://github.com/julianpoy/RecipeSage-selfhost/blob/a1133c51af24ca78f9bc9537e147411b5e7e311a/docker-compose.yml#L8) to something else, such as `3000:80` for port 3000.
+
+You'll very likely want to put RecipeSage behind a reverse proxy for SSL termination (and so that you can run more than just RecipeSage!). That's not covered by this README, but I encourage you look at [Caddy](https://caddyserver.com/docs/install) or [Nginx Proxy Manager](https://nginxproxymanager.com/guide) if you are unfamiliar with reverse proxies. A reverse proxy isn't strictly necessary to use RecipeSage self-hosted, however.
 
 ### Updating
 
-First, take a look at the changelog below for any special upgrade notes. Then follow the steps below.
+First, _take a look at the changelog below for any special upgrade notes_. Then follow the steps below.
 
-By default, the database will be automatically migrated when updating to a new container version. As with any migration/upgrade, I _strongly_ recommend taking a backup of your volumes before migrating to avoid any potential data loss. My first recommendation when encountering issues after an update will be to rollback, which will be impossible if you don't have a backup.
+By default, the database will be automatically migrated when updating to a new container version. As with any migration/upgrade, I **strongly recommend taking a backup** of your volumes before migrating to avoid any potential data loss. My first recommendation when encountering issues after an update will be to rollback, which will be impossible if you don't have a backup.
 
 Update your local copy of this repo with the latest from this repository. If cloned with Git, this is as simple as `git pull`.
 

@@ -4,7 +4,7 @@ services:
     container_name: recipesage_proxy
     image: julianpoy/recipesage-selfhost-proxy:v4.0.0
     ports:
-    - 80:80
+    - 7270:80
     depends_on:
       - static
       - api
