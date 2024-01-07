@@ -72,7 +72,7 @@ These steps are very well documented across the internet, and I recommend Googli
 If you entered a domain name for RecipeSage in step 6, you'll want to:
 
 - Follow [Synology's guide for getting an HTTPS certificate](https://kb.synology.com/en-my/DSM/tutorial/How_to_enable_HTTPS_and_create_a_certificate_signing_request_on_your_Synology_NAS) if you don't have a certificate for this domain name already configured. You can manage certificates and their assignments within `Control Panel -> Security -> Certificate`.
-- Port forward port 80 & 443 via your router to your Synology box.
+- Port forward port 80 & 443 via your router to your Synology box. (Google the model of your router for instructions for how to do this)
 - Follow [Synology's guide for setting up DDNS for your domain](https://kb.synology.com/en-us/DSM/help/DSM/AdminCenter/connection_ddns?version=7)
 
 If you've followed all of the steps above, you should be able to access RecipeSage via the domain you configured.
