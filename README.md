@@ -18,6 +18,8 @@ Warning: There are portions of the software that may not work. I don't warranty 
 
 ## Setup
 
+For Synology boxes, see [this setup guide instead](./SETUP-SYNOLOGY.md).
+
 1. You'll need Docker to run [RecipeSage](https://recipesage.com) locally. Although you _can_ attempt to run it without Docker, you're on your own.
 2. Start all containers with `docker compose up -d`
 3. The app should be available at port 7270. You can change that by changing [this](https://github.com/julianpoy/RecipeSage-selfhost/blob/a1133c51af24ca78f9bc9537e147411b5e7e311a/docker-compose.yml#L8) to something else, such as `3000:80` for port 3000.
