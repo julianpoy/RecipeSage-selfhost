@@ -1,4 +1,6 @@
-version: '3.7'
+# This config file is for RecipeSage-selfhost version 4.0.0, and RecipeSage version 2.12.10.
+
+version: '3.7' # (this is the docker compose version, not RecipeSage version)
 services:
   proxy: # The proxy must not be removed. If needed, point your own proxy to this container, rather than removing this
     container_name: recipesage_proxy
@@ -54,7 +56,7 @@ services:
     volumes:
       - recipesage_apimedia:/rs-media
     restart: unless-stopped
-  typesense:
+  typesense: # Provides the fuzzy search engine
     container_name: recipesage_typesense
     image: typesense/typesense:0.24.1
     volumes:
@@ -90,13 +92,17 @@ services:
       - MAX_CONCURRENT_SESSIONS=3
       - MAX_QUEUE_LENGTH=10
     restart: unless-stopped
-  ingredient-instruction-classifier: # A mini server that runs a machine learning model able to classify text for improved automatic import. Not required for application to run, and will crash if your CPU does not support AVX instructions
-    container_name: recipesage_classifier
-    image: julianpoy/ingredient-instruction-classifier:1.4.11
-    environment:
-      - SENTENCE_EMBEDDING_BATCH_SIZE=200
-      - PREDICTION_CONCURRENCY=2
-    restart: unless-stopped
+
+  # Uncomment the lines below to enable the ingredient instruction classifier. It's somewhat resource intensive and requires AVX instruction support on your CPU, but does improve site compatibility for the automatic import tool.
+
+  # ingredient-instruction-classifier: # A mini server that runs a machine learning model able to classify text for improved automatic import site support. Not required for application to run, and will crash if your CPU does not support AVX instructions
+  #   container_name: recipesage_classifier
+  #   image: julianpoy/ingredient-instruction-classifier:1.4.11
+  #   environment:
+  #     - SENTENCE_EMBEDDING_BATCH_SIZE=200
+  #     - PREDICTION_CONCURRENCY=2
+  #   restart: unless-stopped
+
 volumes:
   recipesage_apimedia:
     driver: local
