@@ -28,15 +28,15 @@ You'll very likely want to put RecipeSage behind a reverse proxy for SSL termina
 
 ### Updating
 
-First, _take a look at the changelog below for any special upgrade notes_. Then follow the steps below.
-
 By default, the database will be automatically migrated when updating to a new container version. As with any migration/upgrade, I **strongly recommend taking a backup** of your volumes before migrating to avoid any potential data loss. My first recommendation when encountering issues after an update will be to rollback, which will be impossible if you don't have a backup.
 
-Update your local copy of this repo with the latest from this repository. If cloned with Git, this is as simple as `git pull`.
+1. [_Take a look at the changelog below for any special upgrade notes_](#changelog). Then follow the steps below.
 
-Update your local images: `docker compose pull`.
+2. Update your local copy of this repo with the latest from this repository. If cloned with Git, this is as simple as `git pull`.
 
-Then, down & up the containers: `docker compose down --remove-orphans && docker compose up -d`
+3. Update your local images: `docker compose pull`.
+
+4. Down & up the containers: `docker compose down --remove-orphans && docker compose up -d`
 
 <br />
 
@@ -100,11 +100,11 @@ The `ingredient-instruction-classifier` container facilitates machine learning c
 
 Migrations are now automated, and use a different migration tool.
 
-If you have an older version of this repository, you _must_ upgrade to this version of the repository and do the following before upgrading to newer versions:
+If you have an older version of this repository, you _must_ upgrade to this version of the repository and do the following before upgrading to newer versions so that migrations all line up:
 
 1. Update your local copy of the repository to v4.0.0
 2. Run `docker compose exec api tsx packages/backend/src/migrate`
-3. Run `docker compose exec api npx prisma migrate resolve --applied 0_init`
+3. If the command prior ran successfully, run `docker compose exec api npx prisma migrate resolve --applied 0_init`
 
 ### v3.1.0
 
