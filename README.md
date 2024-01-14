@@ -90,9 +90,9 @@ The `pushpin` container is a broker for all websocket connections. Without it, a
 
 The `postgres` container is the database. The application cannot run without it.
 
-The `browserless` container is a virtual web browser that is used to scrape recipe data when you paste a URL into the "autofill" feature of the app. Without it, the recipe scraper _should still work_, but will fall back to JSDOM which will be significantly less accurate and may contain formatting errors.
+The `browserless` container is a virtual web browser that is used to scrape recipe data when you paste a URL into the "autofill" feature of the app. Without it the recipe scraper _should still work_, but will fall back to JSDOM which will be significantly less accurate and may contain formatting errors.
 
-The `ingredient-instruction-classifier` container facilitates machine learning classification of ingredients and instructions, which is used to improve accuracy during the "autofill" feature. Without it, the recipe _should still work_, but will be a bit less accurate or may not be able to pull ingredients or instructions from poorly formatted webpages.
+The `ingredient-instruction-classifier` container facilitates machine learning classification of ingredients and instructions, which is used to improve accuracy during the "autofill" feature. Without it the recipe scraper _will still work_, but will lose the ability to pull ingredients or instructions from webpates with no JSON-LD headers and no formatting.
 
 ## Changelog
 
