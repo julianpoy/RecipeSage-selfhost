@@ -87,7 +87,7 @@ services:
     restart: unless-stopped
   browserless: # A headless browser for scraping websites with the auto import tool
     container_name: recipesage_browserless
-    image: browserless/chrome:1.57-puppeteer-19.2.2
+    image: browserless/chrome:1.61.0-puppeteer-21.4.1
     environment:
       - MAX_CONCURRENT_SESSIONS=3
       - MAX_QUEUE_LENGTH=10
