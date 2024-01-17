@@ -1,4 +1,4 @@
-# This config file is for RecipeSage-selfhost version 4.0.0, and RecipeSage version 2.12.10.
+# This config file is for RecipeSage-selfhost version 4.0.0, and RecipeSage version 2.13.1.
 
 version: '3.7' # (this is the docker compose version, not RecipeSage version)
 services:
@@ -14,11 +14,11 @@ services:
     restart: unless-stopped
   static: # Hosts frontend assets
     container_name: recipesage_static
-    image: julianpoy/recipesage-selfhost:static-v2.13.0-beta28
+    image: julianpoy/recipesage-selfhost:static-v2.13.1
     restart: unless-stopped
   api: # Hosts backend API
     container_name: recipesage_api
-    image: julianpoy/recipesage-selfhost:api-v2.13.0-beta28
+    image: julianpoy/recipesage-selfhost:api-v2.13.1
     depends_on:
       - postgres
       - typesense
