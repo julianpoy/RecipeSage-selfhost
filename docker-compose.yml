@@ -1,12 +1,12 @@
-version: '3.7'
+# This config file is for RecipeSage-selfhost version 4.0.0, and RecipeSage version 2.13.1.
+
+version: '3.7' # (this is the docker compose version, not RecipeSage version)
 services:
   proxy: # The proxy must not be removed. If needed, point your own proxy to this container, rather than removing this
     container_name: recipesage_proxy
-    image: nginx
-    volumes:
-    - ./proxy.conf:/etc/nginx/conf.d/default.conf
+    image: julianpoy/recipesage-selfhost-proxy:v4.0.0
     ports:
-    - 80:80
+    - 7270:80
     depends_on:
       - static
       - api
@@ -14,17 +14,19 @@ services:
     restart: unless-stopped
   static: # Hosts frontend assets
     container_name: recipesage_static
-    image: julianpoy/recipesage-selfhost:static-v2.12.10
+    image: julianpoy/recipesage-selfhost:static-v2.13.1
     restart: unless-stopped
   api: # Hosts backend API
     container_name: recipesage_api
-    image: julianpoy/recipesage-selfhost:api-v2.12.10
+    image: julianpoy/recipesage-selfhost:api-v2.13.1
     depends_on:
       - postgres
       - typesense
       - pushpin
       - browserless
-    command: npx ts-node --swc --project packages/backend/tsconfig.json packages/backend/src/bin/www
+    # Swap commands if you want to disable automatic migrations on startup
+    command: sh -c "npx prisma migrate deploy && npx ts-node --swc --project packages/backend/tsconfig.json packages/backend/src/bin/www"
+    # command: npx ts-node --swc --project packages/backend/tsconfig.json packages/backend/src/bin/www
     environment:
       - STORAGE_TYPE=filesystem
       - FILESYSTEM_STORAGE_PATH=/rs-media
@@ -54,11 +56,11 @@ services:
     volumes:
       - apimedia:/rs-media
     restart: unless-stopped
-  typesense:
+  typesense: # Provides the fuzzy search engine
     container_name: recipesage_typesense
     image: typesense/typesense:0.24.1
     volumes:
-      - typesensedata:/data
+      typesensedata:/data
     command: "--data-dir /data --api-key=recipesage_selfhost --enable-cors"
     restart: unless-stopped
   pushpin: # Provides websocket support
@@ -81,22 +83,26 @@ services:
       - POSTGRES_USER=recipesage_selfhost
       - POSTGRES_PASSWORD=recipesage_selfhost
     volumes:
-      - postgresdata:/var/lib/postgresql/data
+      postgresdata:/var/lib/postgresql/data
     restart: unless-stopped
   browserless: # A headless browser for scraping websites with the auto import tool
     container_name: recipesage_browserless
-    image: browserless/chrome:1.57-puppeteer-19.2.2
+    image: browserless/chrome:1.61.0-puppeteer-21.4.1
     environment:
       - MAX_CONCURRENT_SESSIONS=3
       - MAX_QUEUE_LENGTH=10
     restart: unless-stopped
-  ingredient-instruction-classifier: # A mini server that runs a machine learning model able to classify text for improved automatic import
-    container_name: recipesage_classifier
-    image: julianpoy/ingredient-instruction-classifier:1.4.9
-    environment:
-      - SENTENCE_EMBEDDING_BATCH_SIZE=200
-      - PREDICTION_CONCURRENCY=4
-    restart: unless-stopped
+
+  # Uncomment the lines below to enable the ingredient instruction classifier. It's somewhat resource intensive and requires AVX instruction support on your CPU, but does improve site compatibility for the automatic import tool.
+
+  # ingredient-instruction-classifier: # A mini server that runs a machine learning model able to classify text for improved automatic import site support. Not required for application to run, and will crash if your CPU does not support AVX instructions
+  #   container_name: recipesage_classifier
+  #   image: julianpoy/ingredient-instruction-classifier:1.4.11
+  #   environment:
+  #     - SENTENCE_EMBEDDING_BATCH_SIZE=200
+  #     - PREDICTION_CONCURRENCY=2
+  #   restart: unless-stopped
+
 volumes:
   apimedia:
     driver: local

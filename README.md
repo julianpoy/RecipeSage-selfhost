@@ -18,27 +18,27 @@ Warning: There are portions of the software that may not work. I don't warranty 
 
 ## Setup
 
+For Synology boxes, see [this setup guide instead](./SETUP-SYNOLOGY.md).
+
 1. You'll need Docker to run [RecipeSage](https://recipesage.com) locally. Although you _can_ attempt to run it without Docker, you're on your own.
 2. Start all containers with `docker compose up -d`
-3. On first run, and when updating, you'll need to run database migrations with `./migrate.sh`
-4. The app should be available at port 80. You can change that by changing [this](https://github.com/julianpoy/RecipeSage-selfhost/blob/a1133c51af24ca78f9bc9537e147411b5e7e311a/docker-compose.yml#L8) to something else, such as `3000:80` for port 3000.
+3. The app should be available at port 7270. You can change that by changing [this](https://github.com/julianpoy/RecipeSage-selfhost/blob/a1133c51af24ca78f9bc9537e147411b5e7e311a/docker-compose.yml#L8) to something else, such as `3000:80` for port 3000.
+
+You'll very likely want to put RecipeSage behind a reverse proxy for SSL termination (and so that you can run more than just RecipeSage!). That's not covered by this README, but I encourage you look at [Caddy](https://caddyserver.com/docs/install) or [Nginx Proxy Manager](https://nginxproxymanager.com/guide) if you are unfamiliar with reverse proxies. A reverse proxy isn't strictly necessary to use RecipeSage self-hosted, however.
 
 ### Updating
 
-First, take a look at the changelog below for any special upgrade notes. Then follow the steps below.
+By default, the database will be automatically migrated when updating to a new container version. As with any migration/upgrade, I **strongly recommend taking a backup** of your volumes before migrating to avoid any potential data loss. My first recommendation when encountering issues after an update will be to rollback, which will be impossible if you don't have a backup.
 
-As with any migration/upgrade, I recommend taking a backup of your volumes before migrating to avoid any potential data loss.
+1. [_Take a look at the changelog below for any special upgrade notes_](#changelog). Then follow the steps below.
 
-Update your local copy of this repo with the latest from this repository. If cloned with Git, this is as simple as `git pull`.
+2. Update your local copy of this repo with the latest from this repository. If cloned with Git, this is as simple as `git pull`.
 
-Update your local images: `docker compose pull`.
+3. Update your local images: `docker compose pull`.
 
-Then, down & up the containers: `docker compose down --remove-orphans && docker compose up -d`
-
-Finally, run any pending migrations with `./migrate.sh`
+4. Down & up the containers: `docker compose down --remove-orphans && docker compose up -d`
 
 <br />
-
 
 ## Customization
 
@@ -68,11 +68,11 @@ It's fairly common that older CPUs (often shipped in prebuilt NASes) do not supp
 
 > Illegal Instruction (core dumped)
 
-Since the ingredient-instruction-classifier container is not _required_ by RecipeSage, it can be removed/disabled from the docker-compose file if you don't have AVX instruction set support. Without the ingredient-instruction-classifier container, the automatic recipe import feature will still work on the majority of sites, but will be unable to pull content from sites that are particularly poorly formatted, or that have no metadata at all.
+Since the ingredient-instruction-classifier container is not _required_ by RecipeSage, **it can be removed/disabled** from the docker-compose file if you don't have AVX instruction set support. Without the ingredient-instruction-classifier container, the automatic recipe import feature will still work on the majority of sites, but will be unable to pull content from sites that are particularly poorly formatted, or that have no metadata at all.
 
 #### I'm seeing an "unexpected error occurred" error when trying to register
 
-This is most frequently because the migration script has not been run successfully. Note that if you change the name of the containers in the docker-compose file, the migration script will not be able to run the required migration script within the container, and you must do so by exec-ing into the container yourself, similar to what the script does.
+This is most frequently because the migration script has not been run successfully. Please include logs from the API container when posting any issue related to this.
 
 #### Container Structure
 
@@ -90,11 +90,21 @@ The `pushpin` container is a broker for all websocket connections. Without it, a
 
 The `postgres` container is the database. The application cannot run without it.
 
-The `browserless` container is a virtual web browser that is used to scrape recipe data when you paste a URL into the "autofill" feature of the app. Without it, the recipe scraper _should still work_, but will fall back to JSDOM which will be significantly less accurate and may contain formatting errors.
+The `browserless` container is a virtual web browser that is used to scrape recipe data when you paste a URL into the "autofill" feature of the app. Without it the recipe scraper _should still work_, but will fall back to JSDOM which will be significantly less accurate and may contain formatting errors.
 
-The `ingredient-instruction-classifier` container facilitates machine learning classification of ingredients and instructions, which is used to improve accuracy during the "autofill" feature. Without it, the recipe _should still work_, but will be a bit less accurate or may not be able to pull ingredients or instructions from poorly formatted webpages.
+The `ingredient-instruction-classifier` container facilitates machine learning classification of ingredients and instructions, which is used to improve accuracy during the "autofill" feature. Without it the recipe scraper _will still work_, but will lose the ability to pull ingredients or instructions from webpates with no JSON-LD headers and no formatting.
 
 ## Changelog
+
+### v4.0.0
+
+Migrations are now automated, and use a different migration tool.
+
+If you have an older version of this repository, you _must_ upgrade to this version of the repository and do the following before upgrading to newer versions so that migrations all line up:
+
+1. Update your local copy of the repository to v4.0.0
+2. Run `docker compose exec api tsx packages/backend/src/migrate`
+3. If the command prior ran successfully, run `docker compose exec api npx prisma migrate resolve --applied 0_init`
 
 ### v3.1.0
 
