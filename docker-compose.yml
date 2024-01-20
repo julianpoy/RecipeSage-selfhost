@@ -25,7 +25,7 @@ services:
       - pushpin
       - browserless
     # Swap commands if you want to disable automatic migrations on startup
-    command: sh -c "npx prisma migrate deploy && npx ts-node --swc --project packages/backend/tsconfig.json packages/backend/src/bin/www"
+    command: sh -c "npx prisma migrate deploy; npx ts-node --swc --project packages/backend/tsconfig.json packages/backend/src/bin/www"
     # command: npx ts-node --swc --project packages/backend/tsconfig.json packages/backend/src/bin/www
     environment:
       - STORAGE_TYPE=filesystem
