@@ -60,7 +60,7 @@ services:
     container_name: recipesage_typesense
     image: typesense/typesense:0.24.1
     volumes:
-      typesensedata:/data
+      - typesensedata:/data
     command: "--data-dir /data --api-key=recipesage_selfhost --enable-cors"
     restart: unless-stopped
   pushpin: # Provides websocket support
@@ -83,7 +83,7 @@ services:
       - POSTGRES_USER=recipesage_selfhost
       - POSTGRES_PASSWORD=recipesage_selfhost
     volumes:
-      postgresdata:/var/lib/postgresql/data
+      - postgresdata:/var/lib/postgresql/data
     restart: unless-stopped
   browserless: # A headless browser for scraping websites with the auto import tool
     container_name: recipesage_browserless
