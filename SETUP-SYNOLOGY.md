@@ -23,7 +23,7 @@ Switch to the project tab in the left sidebar of the `Container Manager`.
 
 Create a project either using the "create" button, and enter the corresponding details (as shown below) into the create project dialogue.
 
-<img src="./src/img/synology-container-manager.png" />
+<img src="./src/img/synology-new-project.png" />
 
 **Note** that you'll paste in the docker-compose.yml file that you copied above into this dialogue.
 
