@@ -105,6 +105,7 @@ If you have an older version of this repository, you _must_ upgrade to this vers
 1. Update your local copy of the repository to v4.0.0
 2. Run `docker compose exec api tsx packages/backend/src/migrate`
 3. If the command prior ran successfully, run `docker compose exec api npx prisma migrate resolve --applied 0_init`
+4. Restart the API container with `docker compose restart api`
 
 ### v3.1.0
 
