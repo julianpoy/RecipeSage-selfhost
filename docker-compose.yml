@@ -33,14 +33,14 @@ services:
       - NODE_ENV=selfhost
       - VERBOSE=false
       - VERSION=selfhost
-      - POSTGRES_DB=recipesage_selfhost
-      - POSTGRES_USER=recipesage_selfhost
-      - POSTGRES_PASSWORD=recipesage_selfhost
-      - POSTGRES_PORT=5432
-      - POSTGRES_HOST=postgres
+      - POSTGRES_DB=recipesage_selfhost # If changing this, make sure to update the postgres container and the DATABASE_URL below accordingly
+      - POSTGRES_USER=recipesage_selfhost # If changing this, make sure to update the postgres container and the DATABASE_URL below accordingly
+      - POSTGRES_PASSWORD=recipesage_selfhost # If changing this, make sure to update the postgres container and the DATABASE_URL below accordingly
+      - POSTGRES_PORT=5432 # If changing this, make sure to update the postgres container and the DATABASE_URL below accordingly
+      - POSTGRES_HOST=postgres # If changing this, make sure to update the postgres container and the DATABASE_URL below accordingly
       - POSTGRES_SSL=false
       - POSTGRES_LOGGING=false
-      - DATABASE_URL=postgresql://recipesage_selfhost:recipesage_selfhost@postgres:5432/recipesage_selfhost
+      - DATABASE_URL=postgresql://recipesage_selfhost:recipesage_selfhost@postgres:5432/recipesage_selfhost # Format is: postgresql://USERNAME:PASSWORD@HOST:PORT/DBNAME and must match the variables from the postgres container if you decide to change them
       - GCM_KEYPAIR
       - SENTRY_DSN
       - GRIP_URL=http://pushpin:5561/
@@ -48,8 +48,8 @@ services:
       - SEARCH_PROVIDER=typesense
       - 'TYPESENSE_NODES=[{"host": "typesense", "port": 8108, "protocol": "http"}]'
       - TYPESENSE_API_KEY=recipesage_selfhost
-      - STRIPE_SK
-      - STRIPE_WEBHOOK_SECRET
+      - STRIPE_SK # Value should not be set.
+      - STRIPE_WEBHOOK_SECRET # Value should not be set
       - BROWSERLESS_HOST=browserless
       - BROWSERLESS_PORT=3000
       - INGREDIENT_INSTRUCTION_CLASSIFIER_URL=http://ingredient-instruction-classifier:3000/
