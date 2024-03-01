@@ -79,9 +79,9 @@ services:
     container_name: recipesage_postgres
     image: postgres:16
     environment:
-      - POSTGRES_DB=recipesage_selfhost
-      - POSTGRES_USER=recipesage_selfhost
-      - POSTGRES_PASSWORD=recipesage_selfhost
+      - POSTGRES_DB=recipesage_selfhost # If you change this, make sure to change both POSTGRES_DB and DATABASE_URL on the API container
+      - POSTGRES_USER=recipesage_selfhost # If you change this, make sure to change both POSTGRES_USER and DATABASE_URL on the API container
+      - POSTGRES_PASSWORD=recipesage_selfhost # If you change this, make sure to change both POSTGRES_PASSWORD and DATABASE_URL on the API container
     volumes:
       - postgresdata:/var/lib/postgresql/data
     restart: unless-stopped
