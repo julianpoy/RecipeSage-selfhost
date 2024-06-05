@@ -1,6 +1,5 @@
-# This config file is for RecipeSage-selfhost version 4.0.0, and RecipeSage version 2.13.3.
+# This config file is for RecipeSage-selfhost version 4.1.0, and RecipeSage version 2.14.2.
 
-version: '3.7' # (this is the docker compose version, not RecipeSage version)
 services:
   proxy: # The proxy must not be removed. If needed, point your own proxy to this container, rather than removing this
     container_name: recipesage_proxy
@@ -14,19 +13,17 @@ services:
     restart: unless-stopped
   static: # Hosts frontend assets
     container_name: recipesage_static
-    image: julianpoy/recipesage-selfhost:static-v2.13.3
+    image: julianpoy/recipesage-selfhost:static-v2.14.2
     restart: unless-stopped
   api: # Hosts backend API
     container_name: recipesage_api
-    image: julianpoy/recipesage-selfhost:api-v2.13.3
+    image: julianpoy/recipesage-selfhost:api-v2.14.2
     depends_on:
       - postgres
       - typesense
       - pushpin
       - browserless
-    # Swap commands if you want to disable automatic migrations on startup
     command: sh -c "npx prisma migrate deploy; npx ts-node --swc --project packages/backend/tsconfig.json packages/backend/src/bin/www"
-    # command: npx ts-node --swc --project packages/backend/tsconfig.json packages/backend/src/bin/www
     environment:
       - STORAGE_TYPE=filesystem
       - FILESYSTEM_STORAGE_PATH=/rs-media
@@ -53,6 +50,7 @@ services:
       - BROWSERLESS_HOST=browserless
       - BROWSERLESS_PORT=3000
       - INGREDIENT_INSTRUCTION_CLASSIFIER_URL=http://ingredient-instruction-classifier:3000/
+      - OPENAI_API_KEY # Please follow the instructions in the README if you decide to supply a value here
     volumes:
       - apimedia:/rs-media
     restart: unless-stopped
@@ -93,9 +91,9 @@ services:
       - MAX_QUEUE_LENGTH=10
     restart: unless-stopped
 
-  # Uncomment the lines below to enable the ingredient instruction classifier. It's somewhat resource intensive and requires AVX instruction support on your CPU, but does improve site compatibility for the automatic import tool.
+  # Uncomment the lines below to enable the ingredient instruction classifier. It's somewhat resource intensive (and large) and requires AVX instruction support on your CPU, but does improve site compatibility for the automatic import tool.
 
-  # ingredient-instruction-classifier: # A mini server that runs a machine learning model able to classify text for improved automatic import site support. Not required for application to run, and will crash if your CPU does not support AVX instructions
+  # ingredient-instruction-classifier: # An _optional_ server that runs a machine learning model able to classify text for improved automatic import site support. Not required for application to run, and will crash if your CPU does not support AVX instructions
   #   container_name: recipesage_classifier
   #   image: julianpoy/ingredient-instruction-classifier:1.4.11
   #   environment:

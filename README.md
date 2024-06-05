@@ -60,15 +60,19 @@ Please contribute to the development & maintenance of RecipeSage at https://reci
 
 `./activate.sh example@example.com`
 
+### OpenAI API Keys
+
+_This section is optional, but does enable some features_
+
+Some of the features within the app rely on an OpenAI API key and will not be functional by default. This includes the "scan from image", "scan from PDF", and "autofill from text" features.
+
+**I cannot provide support for setting up an OpenAI account.**
+
+1. Create an API key with OpenAI at [https://platform.openai.com](https://platform.openai.com) and setup your credit card with them
+2. Set `OPENAI_API_KEY` in your docker-compose to the API key you created (it's already in there, just with no value)
+3. Re-create the containers via docker-compose if you've already started them
+
 ### FAQ
-
-#### Ingredient instruction classifier container repeatedly crashing
-
-It's fairly common that older CPUs (often shipped in prebuilt NASes) do not support the AVX instruction set required to run the machine learning model that the ingredient-instruction-classifier hosts. You'll an error message such as this one when encountering this issue:
-
-> Illegal Instruction (core dumped)
-
-Since the ingredient-instruction-classifier container is not _required_ by RecipeSage, **it can be removed/disabled** from the docker-compose file if you don't have AVX instruction set support. Without the ingredient-instruction-classifier container, the automatic recipe import feature will still work on the majority of sites, but will be unable to pull content from sites that are particularly poorly formatted, or that have no metadata at all.
 
 #### I'm seeing an "unexpected error occurred" error when trying to register
 
