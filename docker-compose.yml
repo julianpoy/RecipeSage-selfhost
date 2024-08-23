@@ -1,4 +1,4 @@
-# This config file is for RecipeSage-selfhost version 4.1.0, and RecipeSage version 2.14.2.
+# This config file is for RecipeSage-selfhost version 4.2.0, and RecipeSage version 2.15.3.
 
 services:
   proxy: # The proxy must not be removed. If needed, point your own proxy to this container, rather than removing this
@@ -13,17 +13,17 @@ services:
     restart: unless-stopped
   static: # Hosts frontend assets
     container_name: recipesage_static
-    image: julianpoy/recipesage-selfhost:static-v2.14.6
+    image: julianpoy/recipesage-selfhost:static-v2.15.3
     restart: unless-stopped
   api: # Hosts backend API
     container_name: recipesage_api
-    image: julianpoy/recipesage-selfhost:api-v2.14.6
+    image: julianpoy/recipesage-selfhost:api-v2.15.3
     depends_on:
       - postgres
       - typesense
       - pushpin
       - browserless
-    command: sh -c "npx prisma migrate deploy; npx ts-node --swc --project packages/backend/tsconfig.json packages/backend/src/bin/www"
+    command: sh -c "npx prisma migrate deploy; npx nx seed prisma; npx ts-node --swc --project packages/backend/tsconfig.json packages/backend/src/bin/www"
     environment:
       - STORAGE_TYPE=filesystem
       - FILESYSTEM_STORAGE_PATH=/rs-media
