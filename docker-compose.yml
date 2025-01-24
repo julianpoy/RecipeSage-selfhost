@@ -1,4 +1,4 @@
-# This config file is for RecipeSage-selfhost version 4.2.0, and RecipeSage version 2.15.3.
+# This config file is for RecipeSage-selfhost version 4.2.0, and RecipeSage version 2.15.9.
 
 services:
   proxy: # The proxy must not be removed. If needed, point your own proxy to this container, rather than removing this
@@ -13,11 +13,11 @@ services:
     restart: unless-stopped
   static: # Hosts frontend assets
     container_name: recipesage_static
-    image: julianpoy/recipesage-selfhost:static-v2.15.3
+    image: julianpoy/recipesage-selfhost:static-v2.15.9
     restart: unless-stopped
   api: # Hosts backend API
     container_name: recipesage_api
-    image: julianpoy/recipesage-selfhost:api-v2.15.3
+    image: julianpoy/recipesage-selfhost:api-v2.15.9
     depends_on:
       - postgres
       - typesense
