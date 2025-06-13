@@ -1,4 +1,4 @@
-# This config file is for RecipeSage-selfhost version 4.2.0, and RecipeSage version 2.15.9.
+# This config file is for RecipeSage-selfhost config version 4.3.0, and RecipeSage version 3.0.1.
 
 services:
   proxy: # The proxy must not be removed. If needed, point your own proxy to this container, rather than removing this
@@ -13,11 +13,11 @@ services:
     restart: unless-stopped
   static: # Hosts frontend assets
     container_name: recipesage_static
-    image: julianpoy/recipesage-selfhost:static-v2.15.11
+    image: julianpoy/recipesage-selfhost:static-v3.0.1
     restart: unless-stopped
   api: # Hosts backend API
     container_name: recipesage_api
-    image: julianpoy/recipesage-selfhost:api-v2.15.11
+    image: julianpoy/recipesage-selfhost:api-v3.0.1
     depends_on:
       - postgres
       - typesense
@@ -85,7 +85,7 @@ services:
     restart: unless-stopped
   browserless: # A headless browser for scraping websites with the auto import tool
     container_name: recipesage_browserless
-    image: browserless/chrome:1.61.0-puppeteer-21.4.1
+    image: ghcr.io/browserless/chromium:v2.24.3
     environment:
       - MAX_CONCURRENT_SESSIONS=3
       - MAX_QUEUE_LENGTH=10
