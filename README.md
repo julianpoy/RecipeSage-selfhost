@@ -72,6 +72,12 @@ Some of the features within the app rely on an OpenAI API key and will not be fu
 2. Set `OPENAI_API_KEY` in your docker-compose to the API key you created (it's already in there, just with no value)
 3. Re-create the containers via docker-compose if you've already started them
 
+#### Using an OpenAI alternative
+
+You can use an OpenAI alternative by adding a new environment variable to your API container.
+
+The `OPENAI_API_BASE_URL` should be set to an OpenAI-compatible endpoint. See the OpenAI documentation for this -- _please_ do not open issues related to non-OpenAI API support -- I do not provide support for this, and only pass the environment variable straight through directly to OpenAI's library.
+
 ### FAQ
 
 #### I'm seeing an "unexpected error occurred" error when trying to register
