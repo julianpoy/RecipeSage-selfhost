@@ -64,7 +64,7 @@ Please contribute to the development & maintenance of RecipeSage at https://reci
 
 _This section is optional, but does enable some features_
 
-Some of the features within the app rely on an OpenAI API key and will not be functional by default. This includes the "scan from image", "scan from PDF", and "autofill from text" features.
+Some of the features within the app rely on an OpenAI API key and will not be functional by default. This includes the "scan from image", "scan from PDF", and "autofill from text" features. Additionally, OpenAI provides a fallback in the case that the recipe clipper is unable to find a match.
 
 **I cannot provide support for setting up an OpenAI account.**
 
