@@ -1,4 +1,4 @@
-# This config file is for RecipeSage-selfhost config version 4.3.1, and RecipeSage version 3.0.10.
+# This config file is for RecipeSage-selfhost config version 2025-11-16, and RecipeSage version 3.1.4.
 
 services:
   proxy: # The proxy must not be removed. If needed, point your own proxy to this container, rather than removing this
@@ -13,11 +13,11 @@ services:
     restart: unless-stopped
   static: # Hosts frontend assets
     container_name: recipesage_static
-    image: julianpoy/recipesage-selfhost:static-v3.0.10
+    image: julianpoy/recipesage-selfhost:static-v3.1.4
     restart: unless-stopped
   api: # Hosts backend API
     container_name: recipesage_api
-    image: julianpoy/recipesage-selfhost:api-v3.0.10
+    image: julianpoy/recipesage-selfhost:api-v3.1.4
     depends_on:
       postgres:
         condition: service_healthy
@@ -27,7 +27,7 @@ services:
         condition: service_started
       browserless:
         condition: service_started
-    command: sh -c "npx prisma migrate deploy; npx nx seed prisma; npx ts-node --swc --project packages/backend/tsconfig.json packages/backend/src/bin/www"
+    command: ./scripts/selfhost-startup.sh
     environment:
       - STORAGE_TYPE=filesystem
       - FILESYSTEM_STORAGE_PATH=/rs-media
@@ -53,7 +53,8 @@ services:
       - STRIPE_WEBHOOK_SECRET # Value should not be set
       - BROWSERLESS_HOST=browserless
       - BROWSERLESS_PORT=3000
-      - INGREDIENT_INSTRUCTION_CLASSIFIER_URL=http://ingredient-instruction-classifier:3000/
+      - INGREDIENT_INSTRUCTION_CLASSIFIER_URL=https://ingredient-instruction-classifier.recipesage.com/ # If you don't want to use the public API, see the commented containers at the bottom of this file
+      - GROCERY_CATEGORIZER_URL=https://grocery-categorizer.recipesage.com/ # If you don't want to use the public API, see the commented containers at the bottom of this file
       - OPENAI_API_KEY # Please follow the instructions in the README if you decide to supply a value here
     volumes:
       - apimedia:/rs-media
@@ -101,14 +102,30 @@ services:
       - MAX_QUEUE_LENGTH=10
     restart: unless-stopped
 
-  # Uncomment the lines below to enable the ingredient instruction classifier. It's somewhat resource intensive (and large) and requires AVX instruction support on your CPU, but does improve site compatibility for the automatic import tool.
 
-  # ingredient-instruction-classifier: # An _optional_ server that runs a machine learning model able to classify text for improved automatic import site support. Not required for application to run, and will crash if your CPU does not support AVX instructions
+  # ===
+  # Ingredient Instruction Classifier
+  # A ML model that's quite resource intensive (and large) and requires AVX instruction support on your CPU. By default the selfhost stack uses the public API to classify items.
+  # If you decide to uncomment the following lines, change the API container's INGREDIENT_INSTRUCTION_CLASSIFIER_URL to http://ingredient-instruction-classifier:3000/
+  # ===
+  #
+  # ingredient-instruction-classifier: # An _optional_ server that runs a machine learning model able to classify text for improved automatic import site support.
   #   container_name: recipesage_classifier
   #   image: julianpoy/ingredient-instruction-classifier:1.4.11
   #   environment:
   #     - SENTENCE_EMBEDDING_BATCH_SIZE=200
   #     - PREDICTION_CONCURRENCY=2
+  #   restart: unless-stopped
+
+  # ===
+  # Grocery Categorizer
+  # A ML model that's quite resource intensive (and large) and requires AVX instruction support on your CPU. By default the selfhost stack uses the public API to categorize items.
+  # If you decide to uncomment these lines, change the API container's GROCERY_CATEGORIZER_URL to http://grocery-categorizer:8000/
+  # ===
+  #
+  # grocery-categorizer: # A server that runs a machine learning model able to categorize ingredient text for shopping list categorization.
+  #   container_name: recipesage_grocery_categorizer
+  #   image: julianpoy/ingredient-categorizer:b12cdd6
   #   restart: unless-stopped
 
 volumes:
