@@ -84,11 +84,12 @@ services:
       - POSTGRES_DB=recipesage_selfhost # If you change this, make sure to change both POSTGRES_DB and DATABASE_URL on the API container
       - POSTGRES_USER=recipesage_selfhost # If you change this, make sure to change both POSTGRES_USER and DATABASE_URL on the API container
       - POSTGRES_PASSWORD=recipesage_selfhost # If you change this, make sure to change both POSTGRES_PASSWORD and DATABASE_URL on the API container
+      - PGUSER=recipesage_selfhost # Change to db user
     volumes:
       - postgresdata:/var/lib/postgresql/data
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready", "-d", "db_prod"]
+      test: ["CMD-SHELL", "pg_isready", "-d", "db_prod", "-U", "recipesage_selfhost"] # Change to db user
       interval: 5s
       timeout: 5s
       retries: 5
