@@ -33,7 +33,7 @@ x-common-env: &common-env
 services:
   proxy: # The proxy must not be removed. If needed, point your own proxy to this container, rather than removing this
     container_name: recipesage_proxy
-    image: julianpoy/recipesage-selfhost-proxy:v4.0.0
+    image: julianpoy/recipesage-selfhost-proxy:2026-08-10
     ports:
     - 7270:80
     depends_on:
@@ -43,11 +43,11 @@ services:
     restart: unless-stopped
   static: # Hosts frontend assets
     container_name: recipesage_static
-    image: julianpoy/recipesage-selfhost:static-v4.0.2
+    image: julianpoy/recipesage-selfhost:static-v4.0.3
     restart: unless-stopped
   api: # Hosts backend API
     container_name: recipesage_api
-    image: julianpoy/recipesage-selfhost:api-v4.0.2
+    image: julianpoy/recipesage-selfhost:api-v4.0.3
     depends_on:
       postgres:
         condition: service_healthy
