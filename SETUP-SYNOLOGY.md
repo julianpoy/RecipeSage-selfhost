@@ -4,12 +4,14 @@ These steps are specific to setting up RecipeSage on a Synology box. Please foll
 
 ## Prerequisites
 
-- Version 7.2 of DSM running on your Synology NAS.
+- Version 7.2 or later of DSM running on your Synology NAS.
 - The package `Container Manager` installed via the `Package Center` application on your Synology NAS.
 
 ## Step 1
 
 Copy the RecipeSage docker-compose.yml file [from here](https://raw.githubusercontent.com/julianpoy/RecipeSage-selfhost/main/docker-compose.yml).
+
+Change the API_PUBLIC_BASE_URL variable to your domain (keeping the `/api` suffix).
 
 ## Step 2
 
