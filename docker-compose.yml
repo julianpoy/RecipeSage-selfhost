@@ -1,9 +1,39 @@
-# This config file is for RecipeSage-selfhost config version 4.3.1, and RecipeSage version 3.0.10.
+# This config file is for RecipeSage-selfhost config version 2026-08-10, and RecipeSage version 4.0.2.
+
+x-common-env: &common-env
+  # === THESE VALUES MUST BE CHANGED ===
+  #
+  API_PUBLIC_BASE_URL: https://example.com/api # Change "example.com" to the domain used for RecipeSage. Do not remove the "/api" suffix.
+
+
+  # === THESE VALUES MAY OPTIONALLY BE CHANGED, BUT DO NOT NEED TO BE ===
+  #
+  GRIP_KEY: recipesage_selfhost # Pushpin is only exposed within the docker network, so you can leave this as-is if desired.
+  POSTGRES_DB: recipesage_selfhost # If changing this, make sure to update the DATABASE_URL below accordingly
+  POSTGRES_USER: recipesage_selfhost # If changing this, make sure to update the DATABASE_URL below accordingly
+  POSTGRES_PASSWORD: recipesage_selfhost # If changing this, make sure to update the DATABASE_URL below accordingly
+  DATABASE_URL: postgresql://recipesage_selfhost:recipesage_selfhost@postgres:5432/recipesage_selfhost # Format is: postgresql://USERNAME:PASSWORD@HOST:PORT/DBNAME and must match the variables above
+  GROCERY_CATEGORIZER_URL: https://grocery-categorizer.recipesage.com/ # If you would like to run this service locally rather than being dependent on RecipeSage cloud, please uncomment the corresponding service at the bottom of this file.
+  AI_PROVIDER: "openrouter" # Please follow the instructions in the README if you decide to supply a value here (openrouter specified by default since all model names are specified in openrouter format)
+  AI_API_KEY: "" # Please follow the instructions in the README if you decide to supply a value here
+  AI_API_BASE_URL: "" # This does not need to be changed unless you are self-hosting your own LLM. Please follow the instructions in the README if you decide to supply a value here
+  AI_MODEL_WEBPAGE: google/gemini-2.5-flash-lite # This model is recommended for this purpose
+  AI_MODEL_TEXT: google/gemini-2.5-flash-lite # This model is recommended for this purpose
+  AI_MODEL_OCR: google/gemini-2.5-flash # This model is recommended for this purpose
+  AI_MODEL_DOCUMENT: google/gemini-2.5-flash # This model is recommended for this purpose
+  AI_MODEL_MODERATION: google/gemini-2.5-flash # This model is recommended for this purpose
+  AI_MODEL_VISION: anthropic/claude-sonnet-4.6 # This model is recommended for this purpose
+  AI_MODEL_NUTRITION: google/gemini-2.5-flash-lite # This model is recommended for this purpose
+  AI_MODEL_ASSISTANT: anthropic/claude-sonnet-4.6 # Use whatever model you prefer
+  AI_MODEL_ASSISTANT_LOW: google/gemini-2.5-flash # Use whatever model you prefer
+  SCRAPFLY_API_KEY: "" # Can be provided to bypass CloudFlare anti-bot for better clip from URL support. Or, just use the browser extension instead since that grabs the HTML directly from the active webpage.
+
+# === Please do not change any values below this line ===
 
 services:
   proxy: # The proxy must not be removed. If needed, point your own proxy to this container, rather than removing this
     container_name: recipesage_proxy
-    image: julianpoy/recipesage-selfhost-proxy:v4.0.0
+    image: julianpoy/recipesage-selfhost-proxy:2026-08-10
     ports:
     - 7270:80
     depends_on:
@@ -13,57 +43,41 @@ services:
     restart: unless-stopped
   static: # Hosts frontend assets
     container_name: recipesage_static
-    image: julianpoy/recipesage-selfhost:static-v3.0.10
+    image: julianpoy/recipesage-selfhost:static-v4.0.3
     restart: unless-stopped
   api: # Hosts backend API
     container_name: recipesage_api
-    image: julianpoy/recipesage-selfhost:api-v3.0.10
+    image: julianpoy/recipesage-selfhost:api-v4.0.3
     depends_on:
       postgres:
         condition: service_healthy
-      typesense:
-        condition: service_started
       pushpin:
         condition: service_started
-      browserless:
-        condition: service_started
-    command: sh -c "npx prisma migrate deploy; npx nx seed prisma; npx ts-node --swc --project packages/backend/tsconfig.json packages/backend/src/bin/www"
+    command: ./scripts/selfhost-startup.sh
     environment:
-      - STORAGE_TYPE=filesystem
-      - FILESYSTEM_STORAGE_PATH=/rs-media
-      - NODE_ENV=selfhost
-      - VERBOSE=false
-      - VERSION=selfhost
-      - POSTGRES_DB=recipesage_selfhost # If changing this, make sure to update the postgres container and the DATABASE_URL below accordingly
-      - POSTGRES_USER=recipesage_selfhost # If changing this, make sure to update the postgres container and the DATABASE_URL below accordingly
-      - POSTGRES_PASSWORD=recipesage_selfhost # If changing this, make sure to update the postgres container and the DATABASE_URL below accordingly
-      - POSTGRES_PORT=5432 # If changing this, make sure to update the postgres container and the DATABASE_URL below accordingly
-      - POSTGRES_HOST=postgres # If changing this, make sure to update the postgres container and the DATABASE_URL below accordingly
-      - POSTGRES_SSL=false
-      - POSTGRES_LOGGING=false
-      - DATABASE_URL=postgresql://recipesage_selfhost:recipesage_selfhost@postgres:5432/recipesage_selfhost # Format is: postgresql://USERNAME:PASSWORD@HOST:PORT/DBNAME and must match the variables from the postgres container if you decide to change them
-      - GCM_KEYPAIR
-      - SENTRY_DSN
-      - GRIP_URL=http://pushpin:5561/
-      - GRIP_KEY=changeme
-      - SEARCH_PROVIDER=typesense
-      - 'TYPESENSE_NODES=[{"host": "typesense", "port": 8108, "protocol": "http"}]'
-      - TYPESENSE_API_KEY=recipesage_selfhost
-      - STRIPE_SK # Value should not be set.
-      - STRIPE_WEBHOOK_SECRET # Value should not be set
-      - BROWSERLESS_HOST=browserless
-      - BROWSERLESS_PORT=3000
-      - INGREDIENT_INSTRUCTION_CLASSIFIER_URL=http://ingredient-instruction-classifier:3000/
-      - OPENAI_API_KEY # Please follow the instructions in the README if you decide to supply a value here
+      <<: *common-env
+      # Please don't change these environment variables
+      ENVIRONMENT: selfhost
+      NODE_ENV: selfhost
+      NODE_OPTIONS: "--max-old-space-size=400"
+      MALLOC_ARENA_MAX: "2"
+      FILESYSTEM_STORAGE_PATH: /rs-media
+      STORAGE_TYPE: filesystem
+      VERBOSE: "false"
+      VERSION: selfhost
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: "5432"
+      POSTGRES_SSL: "false"
+      POSTGRES_LOGGING: "false"
+      DATABASE_SSL: "false"
+      GRIP_URL: http://pushpin:5561/
+      JOB_QUEUE_REDIS_HOST: valkey
+      STRIPE_SK: "" # Value should not be set.
+      GCM_KEYPAIR: "" # Value should not be set.
+      SENTRY_DSN: "" # Value should not be set.
+      STRIPE_WEBHOOK_SECRET: "" # Value should not be set
     volumes:
       - apimedia:/rs-media
-    restart: unless-stopped
-  typesense: # Provides the fuzzy search engine
-    container_name: recipesage_typesense
-    image: typesense/typesense:0.24.1
-    volumes:
-      - typesensedata:/data
-    command: "--data-dir /data --api-key=recipesage_selfhost --enable-cors"
     restart: unless-stopped
   pushpin: # Provides websocket support
     container_name: recipesage_pushpin
@@ -74,48 +88,40 @@ services:
         'sed -i "s/sig_key=changeme/sig_key=$$GRIP_KEY/" /etc/pushpin/pushpin.conf && echo "* $${TARGET},over_http" > /etc/pushpin/routes && pushpin --merge-output',
       ]
     environment:
-      - GRIP_KEY=changeme
-      - TARGET=api:3000
+      <<: *common-env
+      TARGET: api:3000
     restart: unless-stopped
   postgres: # Database
     container_name: recipesage_postgres
     image: postgres:16
     environment:
-      - POSTGRES_DB=recipesage_selfhost # If you change this, make sure to change both POSTGRES_DB and DATABASE_URL on the API container
-      - POSTGRES_USER=recipesage_selfhost # If you change this, make sure to change both POSTGRES_USER and DATABASE_URL on the API container
-      - POSTGRES_PASSWORD=recipesage_selfhost # If you change this, make sure to change both POSTGRES_PASSWORD and DATABASE_URL on the API container
-      - PGUSER=recipesage_selfhost # Change to db user
+      <<: *common-env
     volumes:
       - postgresdata:/var/lib/postgresql/data
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready", "-d", "db_prod", "-U", "recipesage_selfhost"] # Change to db user
+      test: ["CMD", "pg_isready", "-d", "recipesage_selfhost", "-U", "recipesage_selfhost"]
       interval: 5s
       timeout: 5s
       retries: 5
       start_period: 10s
-  browserless: # A headless browser for scraping websites with the auto import tool
-    container_name: recipesage_browserless
-    image: ghcr.io/browserless/chromium:v2.24.3
-    environment:
-      - MAX_CONCURRENT_SESSIONS=3
-      - MAX_QUEUE_LENGTH=10
+  valkey:
     restart: unless-stopped
+    image: valkey/valkey
 
-  # Uncomment the lines below to enable the ingredient instruction classifier. It's somewhat resource intensive (and large) and requires AVX instruction support on your CPU, but does improve site compatibility for the automatic import tool.
-
-  # ingredient-instruction-classifier: # An _optional_ server that runs a machine learning model able to classify text for improved automatic import site support. Not required for application to run, and will crash if your CPU does not support AVX instructions
-  #   container_name: recipesage_classifier
-  #   image: julianpoy/ingredient-instruction-classifier:1.4.11
-  #   environment:
-  #     - SENTENCE_EMBEDDING_BATCH_SIZE=200
-  #     - PREDICTION_CONCURRENCY=2
+  # ===
+  # Grocery Categorizer
+  # A ML model that's quite resource intensive (and large) and requires AVX instruction support on your CPU. By default the selfhost stack uses the public API to categorize items.
+  # If you decide to uncomment these lines, change the API container's GROCERY_CATEGORIZER_URL to http://grocery-categorizer:8000/
+  # ===
+  #
+  # grocery-categorizer: # A server that runs a machine learning model able to categorize ingredient text for shopping list categorization.
+  #   container_name: recipesage_grocery_categorizer
+  #   image: julianpoy/grocery-categorizer:f9d9562
   #   restart: unless-stopped
 
 volumes:
   apimedia:
-    driver: local
-  typesensedata:
     driver: local
   postgresdata:
     driver: local

@@ -21,8 +21,10 @@ Warning: There are portions of the software that may not work. I don't warranty 
 For Synology boxes, see [this setup guide instead](./SETUP-SYNOLOGY.md).
 
 1. You'll need Docker to run [RecipeSage](https://recipesage.com) locally. Although you _can_ attempt to run it without Docker, you're on your own.
-2. Start all containers with `docker compose up -d`
-3. The app should be available at port 7270. You can change that by changing [this](https://github.com/julianpoy/RecipeSage-selfhost/blob/a1133c51af24ca78f9bc9537e147411b5e7e311a/docker-compose.yml#L8) to something else, such as `3000:80` for port 3000.
+2. Grab a copy of the repository locally with git clone
+3. Change the API_PUBLIC_BASE_URL variable to your domain/host+port (keeping the `/api` suffix)
+4. Start all containers with `docker compose up -d`
+5. The app should be available at port 7270. You can change that by changing [this](https://github.com/julianpoy/RecipeSage-selfhost/blob/a1133c51af24ca78f9bc9537e147411b5e7e311a/docker-compose.yml#L8) to something else, such as `3000:80` for port 3000.
 
 You'll very likely want to put RecipeSage behind a reverse proxy for SSL termination (and so that you can run more than just RecipeSage!). That's not covered by this README, but I encourage you look at [Caddy](https://caddyserver.com/docs/install) or [Nginx Proxy Manager](https://nginxproxymanager.com/guide) if you are unfamiliar with reverse proxies. A reverse proxy isn't strictly necessary to use RecipeSage self-hosted, however.
 
@@ -53,6 +55,17 @@ Then, down & up the containers: `docker compose down && docker compose up -d`
 
 When registration is disabled, the registration screen will still appear but will fail with an error if anyone tries to register.
 
+### Browser Extension
+
+You can point the RecipeSage browser extension at your self-hosted server. Open the extension's settings page (in Firefox: about:addons → RecipeSage → Preferences, in Chrome: right-click the extension icon → Options) and fill in the **API URL** and **Web URL** fields under the **Server** section.
+
+For a typical self-hosted install on `yourdomain.com`:
+
+- **API URL**: `https://yourdomain.com/api`
+- **Web URL**: `https://yourdomain.com`
+
+The webextension _requires self-host configuration level 2026-08-10 or newer_ to support self-hosted instances. It will not work if you are running an older instance of RecipeSage.
+
 ### Bonus Features
 
 The "bonus features" from the hosted version can be activated by running the following command (swap out the email address with your account email).
@@ -60,23 +73,25 @@ Please contribute to the development & maintenance of RecipeSage at https://reci
 
 `./activate.sh example@example.com`
 
-### OpenAI API Keys
+### LLM AI API Keys
 
 _This section is optional, but does enable some features_
 
-Some of the features within the app rely on an OpenAI API key and will not be functional by default. This includes the "scan from image", "scan from PDF", and "autofill from text" features. Additionally, OpenAI provides a fallback in the case that the recipe clipper is unable to find a match.
+Some of the features within the app rely on an OpenAI API key and will not be functional by default. This includes the "automatically import from URL" "scan from image", "scan from document", and "autofill from text" features.
 
-**I cannot provide support for setting up an OpenAI account.**
+**I cannot provide support for setting up accounts or downstream selfhosted LLMs.**
 
-1. Create an API key with OpenAI at [https://platform.openai.com](https://platform.openai.com) and setup your credit card with them
-2. Set `OPENAI_API_KEY` in your docker-compose to the API key you created (it's already in there, just with no value)
+1. Create an API key with OpenRouter at [https://openrouter.ai](https://openrouter.ai) and setup your credit card with them
+2. Set the `AI_API_KEY` variable in your docker-compose to the API key you created
 3. Re-create the containers via docker-compose if you've already started them
 
-#### Using an OpenAI alternative
+#### Using Other AI Providers
 
-You can use an OpenAI alternative by adding a new environment variable to your API container.
+The `AI_PROVIDER` environment variable can be set to any of: `openrouter`, `openai`, `anthropic`. If you change the `AI_PROVIDER` variable, you will need to change each `AI_MODEL_*` variable to a supported model name for that given provider (the defaults assume `openrouter`, and are prefixed as such).
 
-The `OPENAI_API_BASE_URL` should be set to an OpenAI-compatible endpoint. See the OpenAI documentation for this -- _please_ do not open issues related to non-OpenAI API support -- I do not provide support for this, and only pass the environment variable straight through directly to OpenAI's library.
+If none of the above apply, you can use almost any OpenAI-compatible alternative by adding a new environment variable to your API container. For example, if you are self-hosting your own LLM at home.
+
+In this case, set `AI_PROVIDER` to `openai` and then set `AI_API_BASE_URL` to any OpenAI-compatible endpoint. See the OpenAI documentation for this -- _please_ do not open issues related to this -- I do not provide support for this. You will also need to change each `AI_MODEL_*` variable to a supported model name for the endpoint you chose.
 
 ### FAQ
 
@@ -94,19 +109,31 @@ The `static` container is a very simple image with the prebuilt frontend assets 
 
 The `api` container facilitates all data storage for the application. The application cannot run without it.
 
-The `elasticsearch` container facilitates the hyper-accurate fuzzysearch for the app. Without it, search within the app will not work.
-
 The `pushpin` container is a broker for all websocket connections. Without it, all realtime interactions between multiple users won't work and will require a reload to get new content, such as when a shopping list item is checked off.
 
 The `postgres` container is the database. The application cannot run without it.
 
-The `browserless` container is a virtual web browser that is used to scrape recipe data when you paste a URL into the "autofill" feature of the app. Without it the recipe scraper _should still work_, but will fall back to JSDOM which will be significantly less accurate and may contain formatting errors.
-
-The `ingredient-instruction-classifier` container facilitates machine learning classification of ingredients and instructions, which is used to improve accuracy during the "autofill" feature. Without it the recipe scraper _will still work_, but will lose the ability to pull ingredients or instructions from webpates with no JSON-LD headers and no formatting.
+The `grocery-categorizer` container facilitates machine learning classification of ingredients, which is used to automatically categorize items into aisles within the shopping list feature. Without it the shopping list _will still work_, but will categorize everything as "Uncategorized". By default, I've configured this to use the cloud hosted version so that you don't have to run it locally.
 
 ## Changelog
 
+### 2026-08-10
+
+Changed version numbering schemes so that it's clearer what's the selfhost config version and what's the app version it's designed to support.
+
+This release:
+- Eliminates the need for an external search engine, and uses Postgres for full-text search. Indexing will be run on startup to ensure everything is indexed.
+- Removes the ingredient-instruction-classifier and any need for it.
+- Removes browserless and any need for it.
+- Changes a number of AI/LLM related environment variables.
+- Requires a new API_PUBLIC_BASE_URL environment variable.
+- Requires valkey/redis.
+- Adds a new grocery-categorizer dependency (written by me, external service) that uses cloud by default but can be run locally if desired.
+- Restructures the docker-compose.yaml file to be a bit easier to understand, and changes to a re-usable environment variable block for ease of configuration.
+
 ### v4.0.0
+
+Note: v4.0.0 above refers to the _selfhost configuration version, not the application version_. Future config releases use date-based numbering so that this is clearer.
 
 Migrations are now automated, and use a different migration tool.
 
