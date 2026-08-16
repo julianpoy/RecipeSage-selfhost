@@ -1,4 +1,4 @@
-# This config file is for RecipeSage-selfhost config version 2026-08-15, and RecipeSage version 4.0.3.
+# This config file is for RecipeSage-selfhost config version 2026-08-16, and RecipeSage version 4.0.3.
 
 x-common-env: &common-env
   # === THESE VALUES MUST BE CHANGED ===
@@ -33,7 +33,7 @@ x-common-env: &common-env
 services:
   proxy: # The proxy must not be removed. If needed, point your own proxy to this container, rather than removing this
     container_name: recipesage_proxy
-    image: julianpoy/recipesage-selfhost-proxy:2026-08-15
+    image: julianpoy/recipesage-selfhost-proxy:2026-08-16
     ports:
     - 7270:80
     depends_on:
