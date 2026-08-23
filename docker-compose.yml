@@ -53,6 +53,8 @@ services:
         condition: service_healthy
       pushpin:
         condition: service_started
+      valkey:
+        condition: service_started
     command: ./scripts/selfhost-startup.sh
     environment:
       <<: *common-env
