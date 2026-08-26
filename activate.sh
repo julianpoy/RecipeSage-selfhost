@@ -1,4 +1,4 @@
 #!/bin/sh
 
-docker compose exec api npx ts-node --swc --project packages/backend/tsconfig.json packages/backend/src/activate $@
+docker compose exec api node dist/apps/cli/main.cjs activateBonusFeatures --email "$@"
 
