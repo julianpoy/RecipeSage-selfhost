@@ -1,4 +1,4 @@
-# This config file is for RecipeSage-selfhost config version 2026-08-16, and RecipeSage version 4.0.3.
+# This config file is for RecipeSage-selfhost config version 2026-08-16, and RecipeSage version 4.0.8.
 
 x-common-env: &common-env
   # === THESE VALUES MUST BE CHANGED ===
@@ -43,11 +43,11 @@ services:
     restart: unless-stopped
   static: # Hosts frontend assets
     container_name: recipesage_static
-    image: julianpoy/recipesage-selfhost:static-v4.0.3
+    image: julianpoy/recipesage-selfhost:static-v4.0.8
     restart: unless-stopped
   api: # Hosts backend API
     container_name: recipesage_api
-    image: julianpoy/recipesage-selfhost:api-v4.0.3
+    image: julianpoy/recipesage-selfhost:api-v4.0.8
     depends_on:
       postgres:
         condition: service_healthy
