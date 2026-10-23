@@ -83,13 +83,13 @@ If you've followed all of the steps above, you should be able to access RecipeSa
 
 First, check any notes regarding the new version you'll be updating to [here](https://github.com/julianpoy/recipesage-selfhost#changelog) since there may be additional steps required.
 
-To update your copy of RecipeSage on your Synology NAS, first stop RecipeSage via the `Container Manager -> Project` interface.
+To update your copy of RecipeSage on your Synology NAS, first select the RecipeSage project via the `Container Manager -> Project` interface.  Then click `Stop` on the top right.
 
 After all of the associated RecipeSage containers stop, navigate to the `YAML Configurations` tab within the RecipeSage project you set up.
 
 Copy the latest docker-compose.yaml from here [from here](https://raw.githubusercontent.com/julianpoy/RecipeSage-selfhost/main/docker-compose.yml), and replace the content of the `YAML Configurations` window with the content of the new docker-compose.yml file.
 
-Click Save and select `Build and start the project (rebuild the image)`.
+Click `Save` in the `Action` menu and select `Build` from the `Action` menu.
 
 RecipeSage should be updated. Again, please perform any additional steps described [here](https://github.com/julianpoy/recipesage-selfhost#changelog) if required.
 
