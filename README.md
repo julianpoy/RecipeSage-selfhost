@@ -66,6 +66,18 @@ For a typical self-hosted install on `yourdomain.com`:
 
 The webextension _requires self-host configuration level 2026-08-10 or newer_ to support self-hosted instances. It will not work if you are running an older instance of RecipeSage.
 
+### Desktop and Mobile Apps
+
+You can connect the RecipeSage desktop app and the iOS and Android apps to your self-hosted server. In the app, open **Settings**, then **Server Settings**, and choose **Custom**.
+
+For a typical self-hosted install on `yourdomain.com`:
+
+- **API base URL**: `https://yourdomain.com/api/`
+- **WebSocket server URL**: `wss://yourdomain.com/grip/ws`
+- **Web URL**: `https://yourdomain.com`
+
+Enter the **Web URL** without `/app` at the end.
+
 ### Bonus Features
 
 The "bonus features" from the hosted version can be activated by running the following command (swap out the email address with your account email).
